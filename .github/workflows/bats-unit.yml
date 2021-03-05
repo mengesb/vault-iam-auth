@@ -35,9 +35,6 @@ jobs:
     - name: Test
       shell: bash
       run: |
-        echo "PATH: ${PATH}"
-        echo "which bats: $(which -s bats)"
-        echo "returned: $?"
         echo "Test: test/requirements.bats"
         bats test/requirements.bats
         for f in $(ls test/*.bats | grep -v requirements); do

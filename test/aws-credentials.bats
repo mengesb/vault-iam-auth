@@ -15,29 +15,28 @@ function teardown_file() {
 
 @test "Requirements: ec2-metadata-mock running" {
   run curl -s http://127.0.0.1:1338/latest/meta-data
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "aws_instance_profile_arn()" {
   source aws/aws-credentials.sh
   run aws_instance_profile_arn
-  [ "$status" -eq 0 ]
-  [ "$output" == "arn:aws:iam::896453262835:instance-profile/baskinc-role" ]
-  [[ "$output" =~ ^arn:aws:iam::[0-9]+:instance-profile/[a-zA-Z0-9_\+=,\.@\-]+$ ]]
+  assert_success
+  assert_output --regexp '^arn:aws:iam::[0-9]+:instance-profile/[a-zA-Z0-9_\+=,\.@\-]+$'
 }
 
 @test "aws_instance_profile_name()" {
   source aws/aws-credentials.sh
   run aws_instance_profile_name
-  [ "$status" -eq 0 ]
-  [ "$output" == "baskinc-role" ]
+  assert_success
+  assert_output 'baskinc-role'
 }
 
 @test "aws_credentials()" {
   source aws/aws-credentials.sh
   run aws_credentials
 
-  [ "$status" -eq 0 ]
+  assert_success
   [ "${lines[0]}" == "{" ]
   [[ "${lines[1]}" =~ \"Code\":\ \"Success\",$ ]]
   [[ "${lines[2]}" =~ \"LastUpdated\":\ \"[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z\",$ ]]
@@ -52,27 +51,27 @@ function teardown_file() {
 @test "aws_access_key_id()" {
   source aws/aws-credentials.sh
   run aws_access_key_id
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" == "12345678901" ]
 }
 
 @test "aws_secret_access_key()" {
   source aws/aws-credentials.sh
   run aws_secret_access_key
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" == "v/12345678901" ]
 }
 
 @test "aws_session_token()" {
   source aws/aws-credentials.sh
   run aws_session_token
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" == "TEST92test48TEST+y6RpoTEST92test48TEST/8oWVAiBqTEsT5Ky7ty2tEStxC1T==" ]
 }
 
 @test "aws-credentials.sh - aws_environment()" {
   run aws/aws-credentials.sh
-  [ "$status" -eq 0 ]
+  assert_success
   [ "${lines[0]}" == "export AWS_ACCESS_KEY_ID=12345678901" ]
   [ "${lines[1]}" == "export AWS_SECRET_ACCESS_KEY=v/12345678901" ]
   [ "${lines[2]}" == "export AWS_SESSION_TOKEN=TEST92test48TEST+y6RpoTEST92test48TEST/8oWVAiBqTEsT5Ky7ty2tEStxC1T==" ]
