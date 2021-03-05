@@ -22,7 +22,7 @@ Generates a HMAC SHA256 digest with date and AWS_SECRET_ACCESS_KEY
 
 ```bash
 $ source aws/aws4-sign.sh
-$ printf '%s' $(TZ=Z date +%Y%m%dT%H%M%SZ) | AWS4_HMAC_SHA256 "v/12345678901" # AWS_SECRET_ACCESS_KEY
+$ printf '%s' $(TZ=Z date +%Y%m%dT%H%M%SZ) | AWS4_HMAC_SHA256 "key:AWS4v/12345678901" # AWS_SECRET_ACCESS_KEY
 79ee5040070df9e44dcf8311c8c39f1e80ad2129427203922bd843d0e5a4a246
 ```
 
