@@ -1,0 +1,28 @@
+---
+name: Shell script lint
+on:
+  - pull_request
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          submodules: true
+
+      - name: Setup shellcheck
+        shell: bash
+        run: |
+          sudo apt-get -y install shellcheck
+
+      - name: shellcheck
+        shell: bash
+        run: |
+          for FILE in $(find . -type f -iname "*.sh" | grep -v test | sed 's/\.\///')
+          do
+            shellcheck $FILE
+          done

@@ -1,0 +1,41 @@
+---
+name: Generate shell script docs
+on:
+  - pull_request
+
+jobs:
+  docs:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.pull_request.head.ref }}
+
+    - name: Install gawk
+      shell: bash
+      run: |
+        sudo apt install -y gawk
+
+    - name: Setup shdoc
+      shell: bash
+      run: |
+        git clone --recursive https://github.com/reconquest/shdoc
+        cd shdoc
+        sudo make install
+        cd ..
+        rm -rf shdoc
+
+    - name: Render shdoc
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        for FILE in $(find . -type f -iname "*.sh" | grep -v test | sed 's/\.\///')
+        do
+          BAREFILE="${FILE##*/}"
+          shdoc < ${FILE} > docs/${BAREFILE:0:-3}.md
+        done
+        git config user.email github-actions@github.com
+        git config user.name github-actions
+        git commit -am "shdoc: Automated shell script document updates"
+        git push
