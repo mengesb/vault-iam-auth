@@ -25,7 +25,7 @@ METADATA="${EC2_METADATA_MOCK:-http://169.254.169.254/2020-10-27/meta-data}"
 #   $ aws_instance_profile_arn
 #   arn:aws:iam::896453262835:instance-profile/baskinc-role
 function aws_instance_profile_arn() {
-  if which -a jq >/dev/null; then
+  if command -v jq >/dev/null; then
     curl -s --no-progress-meter "${METADATA}/iam/info" | jq -r .InstanceProfileArn
   else
     curl -s --no-progress-meter "${METADATA}/iam/info" | sed -n -Ee 's/^[[:space:]]*"InstanceProfileArn": "(arn:aws:iam::[0-9]+:.*)",/\1/p'
@@ -70,7 +70,7 @@ function aws_credentials() {
 #   $ aws_access_key_id
 #   12345678901
 function aws_access_key_id() {
-  if which -a jq > /dev/null; then
+  if command -v jq > /dev/null; then
     aws_credentials | jq -r .AccessKeyId
   else
     aws_credentials | sed -n -Ee 's/^[[:space:]]*"AccessKeyId": "(.*)",/\1/p'
@@ -85,7 +85,7 @@ function aws_access_key_id() {
 #   $ aws_secret_access_key
 #   v/12345678901
 function aws_secret_access_key() {
-  if which -a jq >/dev/null; then
+  if command -v jq >/dev/null; then
     aws_credentials | jq -r .SecretAccessKey
   else
     aws_credentials | sed -n -Ee 's/^[[:space:]]*"SecretAccessKey": "(.*)",/\1/p'
@@ -100,7 +100,7 @@ function aws_secret_access_key() {
 #   $ aws_session_token
 #   TEST92test48TEST+y6RpoTEST92test48TEST/8oWVAiBqTEsT5Ky7ty2tEStxC1T==
 function aws_session_token() {
-  if which -a jq >/dev/null; then
+  if command -v jq >/dev/null; then
     aws_credentials | jq -r .Token
   else
     aws_credentials | sed -n -Ee 's/^[[:space:]]*"Token": "(.*)",/\1/p'
