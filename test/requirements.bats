@@ -3,11 +3,6 @@
 load 'libs/bats-support/load'
 load 'libs/bats-assert/load'
 
-@test "Requirements: bats" {
-  run which -s bats
-  [ "$status" -eq 0 ]
-}
-
 @test "Requirements: bats version" {
   run bats --version
   [ "$status" -eq 0 ]
@@ -15,21 +10,24 @@ load 'libs/bats-assert/load'
 }
 
 @test "Requirements: ec2-metadata-mock" {
-  run which -s ec2-metadata-mock
+  run ec2-metadata-mock --version
   [ "$status" -eq 0 ]
+  [[ "$output" =~ v[1-9]\.[0-9]+\.[0-9]+ ]]
 }
 
 @test "Requirements: shdoc" {
-  run which -s shdoc
+  run which -a shdoc > /dev/null
   [ "$status" -eq 0 ]
 }
 
 @test "Requirements: gawk" {
-  run which -s gawk
+  run gawk --version
   [ "$status" -eq 0 ]
+  [[ "${lines[0]}" =~ GNU\ Awk ]]
 }
 
 @test "Requirements: shellcheck" {
-  run which -s shellcheck
+  run shellcheck --version
   [ "$status" -eq 0 ]
+  [[ "${lines[1]}" =~ version:\ [0-9]+\.[0-9]+\.[0-9]+ ]]
 }
