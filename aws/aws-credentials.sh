@@ -26,9 +26,9 @@ METADATA="${EC2_METADATA_MOCK:-http://169.254.169.254/2020-10-27/meta-data}"
 #   arn:aws:iam::896453262835:instance-profile/baskinc-role
 function aws_instance_profile_arn() {
   if which -a jq >/dev/null; then
-    curl -a "${METADATA}/iam/info" | jq -r .InstanceProfileArn
+    curl -s --no-progress-meter "${METADATA}/iam/info" | jq -r .InstanceProfileArn
   else
-    curl -sS "${METADATA}/iam/info" | sed -n -Ee 's/^[[:space:]]*"InstanceProfileArn": "(arn:aws:iam::[0-9]+:.*)",/\1/p'
+    curl -s --no-progress-meter "${METADATA}/iam/info" | sed -n -Ee 's/^[[:space:]]*"InstanceProfileArn": "(arn:aws:iam::[0-9]+:.*)",/\1/p'
   fi
 }
 
@@ -59,7 +59,7 @@ function aws_instance_profile_name() {
 #           "Expiration": "2020-04-02T00:49:51Z"
 #   }
 function aws_credentials() {
-  curl -sS "${METADATA}/iam/security-credentials/$(aws_instance_profile_name)"
+  curl -s --no-progress-meter "${METADATA}/iam/security-credentials/$(aws_instance_profile_name)"
 }
 
 # @description
