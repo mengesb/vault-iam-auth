@@ -35,6 +35,7 @@ jobs:
     - name: Test
       shell: bash
       run: |
+        curl --help all
         echo "Test: test/requirements.bats"
         bats test/requirements.bats
         for f in $(ls test/*.bats | grep -v requirements); do
