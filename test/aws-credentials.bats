@@ -35,44 +35,42 @@ function teardown_file() {
 @test "aws_credentials()" {
   source aws/aws-credentials.sh
   run aws_credentials
-
   assert_success
-  [ "${lines[0]}" == "{" ]
-  [[ "${lines[1]}" =~ \"Code\":\ \"Success\",$ ]]
-  [[ "${lines[2]}" =~ \"LastUpdated\":\ \"[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z\",$ ]]
-  [[ "${lines[3]}" =~ \"Type\":\ \"AWS-HMAC\",$ ]]
-  [[ "${lines[4]}" =~ \"AccessKeyId\":\ \"[A-Z0-9]+\",$ ]]
-  [[ "${lines[5]}" =~ \"SecretAccessKey\":\ \"[a-zA-Z0-9_\+=,\.@/\-]+\",$ ]]
-  [[ "${lines[6]}" =~ \"Token\":\ \"[a-zA-Z0-9_\+=,\.@/\-]+\",$ ]]
-  [[ "${lines[7]}" =~ \"Expiration\":\ \"[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z\"$ ]]
-  [ "${lines[8]}" == "}" ]
+  assert_output --regexp '^\{'
+  assert_output --regexp '"Code": "Success",'
+  assert_output --regexp '"LastUpdated": "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z",'
+  assert_output --regexp '"Type": "AWS-HMAC",'
+  assert_output --regexp '"AccessKeyId": "[A-Z0-9]+",'
+  assert_output --regexp '"SecretAccessKey": "[a-zA-Z0-9_\+=,\.@/\-]+",'
+  assert_output --regexp '"Expiration": "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z"'
+  assert_output --regexp '}$'
 }
 
 @test "aws_access_key_id()" {
   source aws/aws-credentials.sh
   run aws_access_key_id
   assert_success
-  [ "$output" == "12345678901" ]
+  assert_output --regexp '^[A-Z0-9]+$'
 }
 
 @test "aws_secret_access_key()" {
   source aws/aws-credentials.sh
   run aws_secret_access_key
   assert_success
-  [ "$output" == "v/12345678901" ]
+  assert_output --regexp '^[a-zA-Z0-9_\+=,\.@/\-]+$'
 }
 
 @test "aws_session_token()" {
   source aws/aws-credentials.sh
   run aws_session_token
   assert_success
-  [ "$output" == "TEST92test48TEST+y6RpoTEST92test48TEST/8oWVAiBqTEsT5Ky7ty2tEStxC1T==" ]
+  assert_output --regexp '^[a-zA-Z0-9_\+=,\.@/\-]+$'
 }
 
 @test "aws-credentials.sh - aws_environment()" {
   run aws/aws-credentials.sh
   assert_success
-  [ "${lines[0]}" == "export AWS_ACCESS_KEY_ID=12345678901" ]
-  [ "${lines[1]}" == "export AWS_SECRET_ACCESS_KEY=v/12345678901" ]
-  [ "${lines[2]}" == "export AWS_SESSION_TOKEN=TEST92test48TEST+y6RpoTEST92test48TEST/8oWVAiBqTEsT5Ky7ty2tEStxC1T==" ]
+  assert_equal "${lines[0]}" "export AWS_ACCESS_KEY_ID=12345678901"
+  assert_equal "${lines[1]}" "export AWS_SECRET_ACCESS_KEY=v/12345678901"
+  assert_equal "${lines[2]}" "export AWS_SESSION_TOKEN=TEST92test48TEST+y6RpoTEST92test48TEST/8oWVAiBqTEsT5Ky7ty2tEStxC1T=="
 }
