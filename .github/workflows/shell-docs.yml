@@ -43,7 +43,7 @@ jobs:
           git ls-files --others --exclude-standard
           git config user.email github-actions@github.com
           git config user.name github-actions
-          git commit -am "shdoc: Automated shell script document updates"
+          git commit -am "shdoc: Automated shell script document updates" || return 0
           git push
         fi
         
