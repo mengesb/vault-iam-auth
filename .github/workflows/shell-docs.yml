@@ -41,6 +41,8 @@ jobs:
         then
           exit 0
         else
+          echo "Potentially untracked files"
+          git ls-files --others --exclude-standard
           git config user.email github-actions@github.com
           git config user.name github-actions
           git commit -am "shdoc: Automated shell script document updates"
