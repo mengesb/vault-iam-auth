@@ -4,13 +4,13 @@ load 'libs/bats-support/load'
 load 'libs/bats-assert/load'
 
 function setup_file() {
-  ec2-metadata-mock -n 127.0.0.1 > /dev/null 2>&1 &
+  ec2-metadata-mock -n 127.0.0.1 > /dev/null 3>&- &
   export EC2_METADATA_MOCK=http://127.0.0.1:1338/latest/meta-data
   sleep 1
 }
 
 function teardown_file() {
-  pkill ec2-metadata-mock
+  #pkill ec2-metadata-mock
   unset EC2_METADATA_MOCK
 }
 
