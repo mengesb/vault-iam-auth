@@ -20,7 +20,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         path: shdoc
-        repository: https://github.com/reconquest/shdoc
+        repository: reconquest/shdoc
         submodules: recursive
 
     - name: Setup requirements

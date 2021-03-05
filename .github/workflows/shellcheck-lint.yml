@@ -22,6 +22,6 @@ jobs:
       - name: shellcheck
         shell: bash
         run: |
-          for f in $(find . -iname "*.sh"); do
+          for f in "$(find . -iname "*.sh")"; do
             shellcheck $f
           done
