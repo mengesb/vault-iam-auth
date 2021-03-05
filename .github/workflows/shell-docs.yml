@@ -37,7 +37,7 @@ jobs:
           BAREFILE="${FILE##*/}"
           shdoc < ${FILE} > docs/${BAREFILE:0:-3}.md
         done
-        if diff-index --quiet HEAD
+        if git diff-index --quiet HEAD
         then
           exit 0
         else
