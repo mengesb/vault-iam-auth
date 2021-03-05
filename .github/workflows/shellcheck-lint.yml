@@ -22,6 +22,7 @@ jobs:
       - name: shellcheck
         shell: bash
         run: |
-          for f in "$(find . -iname "*.sh" | grep -v 'test/libs')"; do
-            shellcheck $f
+          for FILE in $(find . -type f -iname "*.sh" | grep -v test | sed 's/\.\///')
+          do
+            shellcheck $FILE
           done

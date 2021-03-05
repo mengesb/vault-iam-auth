@@ -30,11 +30,10 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        for f in "$(find . -iname "*.sh" | grep -v test | sed 's/^.\///')"; do
-          echo $f
-          echo ${f##*/}
-          FILE="${f##*/}"
-          shdoc < "$f" > "docs/${FILE:0:-3}.md"
+        for FILE in $(find . -type f -iname "*.sh" | grep -v test | sed 's/\.\///')
+        do
+          BAREFILE="${FILE##*/}"
+          shdoc < ${FILE} > docs/${BAREFILE:0:-3}.md
         done
         git config user.email github-actions@github.com
         git config user.name github-actions
