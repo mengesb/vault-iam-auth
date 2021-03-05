@@ -25,7 +25,7 @@ METADATA="${EC2_METADATA_MOCK:-http://169.254.169.254/2020-10-27/meta-data}"
 #   $ aws_instance_profile_arn
 #   arn:aws:iam::896453262835:instance-profile/baskinc-role
 function aws_instance_profile_arn() {
-  if which -s jq >/dev/null; then
+  if which -a jq >/dev/null; then
     curl -a "${METADATA}/iam/info" | jq -r .InstanceProfileArn
   else
     curl -s "${METADATA}/iam/info" | sed -n -Ee 's/^[[:space:]]*"InstanceProfileArn": "(arn:aws:iam::[0-9]+:.*)",/\1/p'
@@ -85,7 +85,7 @@ function aws_access_key_id() {
 #   $ aws_secret_access_key
 #   v/12345678901
 function aws_secret_access_key() {
-  if which -s jq >/dev/null; then
+  if which -a jq >/dev/null; then
     aws_credentials | jq -r .SecretAccessKey
   else
     aws_credentials | sed -n -Ee 's/^[[:space:]]*"SecretAccessKey": "(.*)",/\1/p'
