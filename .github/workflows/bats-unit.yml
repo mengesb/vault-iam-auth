@@ -26,7 +26,6 @@ jobs:
     - name: Setup requirements
       shell: bash
       run: |
-        sudo apt install -y gawk shellcheck
         sudo curl -Lo /usr/local/bin/ec2-metadata-mock https://github.com/aws/amazon-ec2-metadata-mock/releases/download/v1.8.1/ec2-metadata-mock-`uname | tr '[:upper:]' '[:lower:]'`-amd64
         sudo chmod a+x /usr/local/bin/ec2-metadata-mock
         cd shdoc
@@ -36,6 +35,7 @@ jobs:
     - name: Test
       shell: bash
       run: |
+        echo "PATH: ${PATH"
         echo "Test: test/requirements.bats"
         bats test/requirements.bats
         for f in $(ls test/*.bats | grep -v requirements); do
