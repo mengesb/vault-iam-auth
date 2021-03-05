@@ -30,6 +30,8 @@ jobs:
         sudo chmod a+x /usr/local/bin/ec2-metadata-mock
         cd shdoc
         sudo make install
+        cd ..
+        rm -rf shdoc
 
 
     - name: Test
