@@ -1,0 +1,47 @@
+---
+name: Unit - BATS
+on: [push, pull_request]
+jobs:
+  unit:
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Setup BATS
+      uses: mig4/setup-bats@v1
+      with:
+        bats-version: 1.2.1
+
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.pull_request.head.ref }}
+        submodules: true
+
+    - name: Checkout shdoc
+      uses: actions/checkout@v2
+      with:
+        path: shdoc
+        repository: https://github.com/reconquest/shdoc
+        submodules: recursive
+
+    - name: Setup requirements
+      shell: bash
+      run: |
+        sudo apt install -y gawk shellcheck
+        sudo curl -Lo /usr/local/bin/ec2-metadata-mock https://github.com/aws/amazon-ec2-metadata-mock/releases/download/v1.8.1/ec2-metadata-mock-`uname | tr '[:upper:]' '[:lower:]'`-amd64
+        sudo chmod a+x /usr/local/bin/ec2-metadata-mock
+        cd shdoc
+        sudo make install
+
+
+    - name: Test
+      shell: bash
+      run: |
+        echo "Test: test/requirements.bats"
+        bats test/requirements.bats
+        for f in $(ls test/*.bats | grep -v requirements); do
+          echo "TEST: $f" && bats $f
+          RET=$?
+          [[ "${RET}" -eq 0 ]] && sleep 1 && echo ""
+          [[ "${RET}" -ne 0 ]] && exit 1
+        done
+        exit "${RET}"
