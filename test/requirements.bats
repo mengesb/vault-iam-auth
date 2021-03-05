@@ -5,29 +5,30 @@ load 'libs/bats-assert/load'
 
 @test "Requirements: bats version" {
   run bats --version
-  [ "$status" -eq 0 ]
-  [[ "$output" =~ Bats\ [1-9]\. ]]
+  assert_success
+  assert_output --regexp '^Bats [1-9]+\.[0-9]+\.[0-9]+$'
 }
 
 @test "Requirements: ec2-metadata-mock" {
   run ec2-metadata-mock --version
-  [ "$status" -eq 0 ]
-  [[ "$output" =~ v[1-9]\.[0-9]+\.[0-9]+ ]]
+  assert_success
+  assert_output --regexp '^v[1-9]+\.[0-9]+\.[0-9]+$'
 }
 
 @test "Requirements: shdoc" {
   run which -a shdoc > /dev/null
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "Requirements: gawk" {
   run gawk --version
-  [ "$status" -eq 0 ]
-  [[ "${lines[0]}" =~ GNU\ Awk ]]
+  assert_success
+  assert_output --partial 'GNU Awk'
 }
 
 @test "Requirements: shellcheck" {
   run shellcheck --version
-  [ "$status" -eq 0 ]
-  [[ "${lines[1]}" =~ version:\ [0-9]+\.[0-9]+\.[0-9]+ ]]
+  assert_success
+  assert_output --partial 'license: GNU'
+  assert_output --regexp 'version: [0-9]+\.[0-9]+\.[0-9]+'
 }

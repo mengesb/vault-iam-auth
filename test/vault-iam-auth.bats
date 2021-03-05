@@ -16,31 +16,31 @@ function teardown_file() {
 
 @test "vault-iam-auth.sh" {
   run aws/vault-iam-auth.sh
-  [ "$status" -eq 0 ]
-  [ "${lines[0]}" == "{" ]
-  [[ "${lines[1]}" =~ \"role\":\ \"[a-zA-Z0-9_\+=,\.@\-]+\",$ ]]
-  [[ "${lines[2]}" =~ \"iam_http_request_method\":\ \"POST\",$ ]]
-  [[ "${lines[3]}" =~ \"iam_request_url\":\ \"[a-zA-Z0-9=]+\",$ ]]
-  [[ "${lines[4]}" =~ \"iam_request_body\":\ \"[a-zA-Z0-9=]+\",$ ]]
-  [[ "${lines[5]}" =~ \"iam_request_headers\":\ \"[a-zA-Z0-9=]+\"$ ]]
-  [ "${lines[6]}" == "}" ]
+  assert_success
+  assert_output --regexp '^\{'
+  assert_output --regexp '"role": "[a-zA-Z0-9_\+=,\.@\-]+",'
+  assert_output --regexp '"iam_http_request_method": "POST",'
+  assert_output --regexp '"iam_request_url": "[a-zA-Z0-9=]+",'
+  assert_output --regexp '"iam_request_body": "[a-zA-Z0-9=]+",'
+  assert_output --regexp '"iam_request_headers": "[a-zA-Z0-9=]+"'
+  assert_output --regexp '}$'
 }
 
 @test "vault-iam-auth.sh -r my-custom-role" {
   run aws/vault-iam-auth.sh -r my-custom-role
-  [ "$status" -eq 0 ]
-  [[ "${lines[1]}" =~ \"role\":\ \"my-custom-role\",$ ]]
+  assert_success
+  assert_output --regexp '"role": "my-custom-role",'
 }
 
 @test "vault-iam-auth.sh with VAULT_ROLE=env-var-vault-role" {
   export VAULT_ROLE=env-var-vault-role
   run aws/vault-iam-auth.sh
-  [ "$status" -eq 0 ]
-  [[ "${lines[1]}" =~ \"role\":\ \"env-var-vault-role\",$ ]]
+  assert_success
+  assert_output --regexp '"role": "env-var-vault-role",'
 }
 
 @test "vault-iam-auth.sh -h" {
   run aws/vault-iam-auth.sh -h
-  [ "$status" -eq 0 ]
-  [ "${lines[0]}" == "  usage: aws/vault-iam-auth.sh [OPTIONS...]" ]
+  assert_success
+  assert_output --regexp '^  usage: aws/vault\-iam\-auth\.sh \[OPTIONS\.\.\.\]'
 }
