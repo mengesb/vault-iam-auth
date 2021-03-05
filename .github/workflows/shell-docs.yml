@@ -37,10 +37,13 @@ jobs:
           BAREFILE="${FILE##*/}"
           shdoc < ${FILE} > docs/${BAREFILE:0:-3}.md
         done
-        git diff-index --quiet HEAD
-        echo "git diff-index --quiet HEAD: $?"
-        git status
-        git config user.email github-actions@github.com
-        git config user.name github-actions
-        git commit -am "shdoc: Automated shell script document updates"
-        git push
+        if diff-index --quiet HEAD
+        then
+          exit 0
+        else
+          git config user.email github-actions@github.com
+          git config user.name github-actions
+          git commit -am "shdoc: Automated shell script document updates"
+          git push
+        fi
+        
