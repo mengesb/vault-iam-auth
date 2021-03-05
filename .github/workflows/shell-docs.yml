@@ -5,6 +5,10 @@ on:
 
 jobs:
   docs:
+    strategy:
+      matrix:
+        shdocfiles:
+          - functions
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
@@ -28,7 +32,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        for f in $(find . -iname "*.sh" | sed 's|^./||'); do
+        for f in "$(find . -iname "*.sh" | sed 's|^./||')"; do
           FILE=${f##*/}
           shdoc < $f > docs/${FILE:0:-3}.md
         done
