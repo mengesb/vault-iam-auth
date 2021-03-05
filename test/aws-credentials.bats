@@ -14,7 +14,7 @@ function teardown_file() {
 }
 
 @test "Requirements: ec2-metadata-mock running" {
-  run curl -s http://127.0.0.1:1338/latest/meta-data
+  run curl -sS http://127.0.0.1:1338/latest/meta-data
   assert_success
 }
 
