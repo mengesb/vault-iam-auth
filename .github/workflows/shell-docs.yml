@@ -25,7 +25,7 @@ jobs:
         cd shdoc
         sudo make install
         cd ..
-        rm -rf shdoc vendor
+        sudo rm -rf shdoc vendor
 
     - name: Render shdoc
       shell: bash
@@ -39,6 +39,7 @@ jobs:
         done
         if git diff-index --quiet HEAD
         then
+          echo "No shell documentation changes detected"
           exit 0
         else
           git ls-files --others --exclude-standard
