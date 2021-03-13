@@ -121,13 +121,13 @@ Shellcheck: aws/vault-iam-auth.sh  -  OK
 
 ### shdoc
 
-[shdoc]((https://github.com/reconquest/shdoc) is used to auto generate documentation of shell scripted languages. GitHub Actions require that this binary be available, however if you are contributing new fuctions or code, you'll be required to document your additions using these annotations. For this reason, it is recommended that you install this tool to see what the generated documentation looks like.
+[shdoc](https://github.com/reconquest/shdoc) is used to auto generate documentation of shell scripted languages. GitHub Actions require that this binary be available, however if you are contributing new fuctions or code, you'll be required to document your additions using these annotations. For this reason, it is recommended that you install this tool to see what the generated documentation looks like.
 
 Generated documentation for shell scripts is done by the [shell-docs.yml](.github/workflows/shell-docs.yml) action. It will search for all `*.sh` files and putput a markdown document in the `docs/` path.
 
 #### Gawk requirement
 
-[shdoc]((https://github.com/reconquest/shdoc) uses `gawk` to parse documentation from shell script files. On MacOS, this is generally not installed, and recommend to be installed via [Homebrew](https://brew.sh/)
+[shdoc](https://github.com/reconquest/shdoc) uses `gawk` to parse documentation from shell script files. On MacOS, this is generally not installed, and recommend to be installed via [Homebrew](https://brew.sh/)
 
 ```bash
 brew install gawk
