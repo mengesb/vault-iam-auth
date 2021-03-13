@@ -31,7 +31,7 @@ jobs:
         cd shdoc
         sudo make install
         cd ..
-        rm -rf shdoc
+        sudo rm -rf shdoc vendor || echo "DONE"
 
 
     - name: Test
