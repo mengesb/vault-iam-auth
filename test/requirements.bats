@@ -16,11 +16,19 @@ load 'libs/bats-assert/load'
 }
 
 @test "Requirements: shdoc" {
-  run which -a shdoc > /dev/null
+  if ! command -v shdoc > /dev/null; then
+    skip "SKIPPED: shdoc not part of \$PATH"
+  fi
+
+  run command -v shdoc > /dev/null
   assert_success
 }
 
 @test "Requirements: gawk" {
+  if ! command -v gawk > /dev/null; then
+    skip "SKIPPED: gawk not part of \$PATH"
+  fi
+
   run gawk --version
   assert_success
   assert_output --partial 'GNU Awk'
