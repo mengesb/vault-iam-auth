@@ -34,7 +34,7 @@ The submitted code should be compatible with the following standards
 
 ## Testing
 
-Please indicate the results of your tests in a comment along with the pull request. Supplying tests and the method used to run/validate the changes are highly encouraged. This repository follows [Bats: Bash Automated Testing System](https://github.com/sstephenson/bats) standards.
+Please indicate the results of your tests in a comment along with the pull request. Supplying tests and the method used to run/validate the changes are highly encouraged. Further information specific to testing can be found in the [TESTING.md](TESTING.md) document.
 
 ## Linting
 
@@ -42,13 +42,7 @@ This repository follows [shellcheck](https://github.com/koalaman/shellcheck) sta
 
 ## Documentation
 
-This repository uses `shdoc` to generate shell documentation. Please see [reconquest/shdoc](https://github.com/reconquest/shdoc#features) for annotations to document shell scripts
-
-## Prerequisites
-
-Familiarize yourself with BASH v4+ and be well versed in special variables.
-
-- [Advanced Bash-Scripting Guide](https://tldp.org/LDP/abs/html/index.html)
+This repository uses `shdoc` to generate shell documentation. Please see [reconquest/shdoc](https://github.com/reconquest/shdoc#features) for annotations to document shell scripts. Other documents, such as the [README.md](README.md), [PULL_REQUEST_TEMPLATE](.github/PULL_REQUEST_TEMPLATE.md), or this document, are expected to not change except by a maintainer.
 
 ## Process
 
@@ -59,6 +53,8 @@ Familiarize yourself with BASH v4+ and be well versed in special variables.
 4. Write tests to support those changes.
 5. Run the tests:
 6. Assuming the tests pass, open a Pull Request on GitHub and add results
+
+Release drafter attempts to label pull requests, which allows for auto generated release documentation and version incrementing. You can see the labeling and version resolution structures [here](.github/release-drafter.yml). Maintainers will do their best to ensure changes are under the right labels, however smaller more focused changes make this easier, and are more likely to be included.
 
 ## Do's and Don't's
 
