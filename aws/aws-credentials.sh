@@ -7,7 +7,7 @@
 # @brief Query AWS EC2 metadata service for information
 # @description
 #   <!-- markdownlint-disable-file MD012 MD024 -->
-#   When sourced as a library, this provides functinos to get various bits of
+#   When sourced as a library, this provides functions to get various bits of
 #   information from the AWS EC2 instance metadata service. When operating as
 #   a script, it will output common environment variables used for AWS tools
 #

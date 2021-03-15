@@ -1,6 +1,15 @@
 ---
 name: Unit - BATS
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+
 jobs:
   unit:
     runs-on: ubuntu-20.04
