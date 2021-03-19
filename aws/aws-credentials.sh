@@ -28,7 +28,7 @@ function aws_instance_profile_arn() {
   if command -v jq >/dev/null; then
     curl -s "${METADATA}/iam/info" | jq -r .InstanceProfileArn
   else
-    curl -s "${METADATA}/iam/info" | sed -n -Ee 's/^[[:space:]]*"InstanceProfileArn": "(arn:aws:iam::[0-9]+:.*)",/\1/p'
+    curl -s "${METADATA}/iam/info" | sed -n -Ee 's/^[[:space:]]*"InstanceProfileArn"[[:space:]]*:[[:space:]]*"(arn:aws:iam::[0-9]+:.*)",/\1/p'
   fi
 }
 
@@ -73,7 +73,7 @@ function aws_access_key_id() {
   if command -v jq > /dev/null; then
     aws_credentials | jq -r .AccessKeyId
   else
-    aws_credentials | sed -n -Ee 's/^[[:space:]]*"AccessKeyId": "(.*)",/\1/p'
+    aws_credentials | sed -n -Ee 's/^[[:space:]]*"AccessKeyId"[[:space:]]*:[[:space:]]*"(.*)",/\1/p'
   fi
 }
 
@@ -88,7 +88,7 @@ function aws_secret_access_key() {
   if command -v jq >/dev/null; then
     aws_credentials | jq -r .SecretAccessKey
   else
-    aws_credentials | sed -n -Ee 's/^[[:space:]]*"SecretAccessKey": "(.*)",/\1/p'
+    aws_credentials | sed -n -Ee 's/^[[:space:]]*"SecretAccessKey"[[:space:]]*:[[:space:]]*"(.*)",/\1/p'
   fi
 }
 
@@ -103,7 +103,7 @@ function aws_session_token() {
   if command -v jq >/dev/null; then
     aws_credentials | jq -r .Token
   else
-    aws_credentials | sed -n -Ee 's/^[[:space:]]*"Token": "(.*)",/\1/p'
+    aws_credentials | sed -n -Ee 's/^[[:space:]]*"Token"[[:space:]]*:[[:space:]]*"(.*)",/\1/p'
   fi
 }
 
