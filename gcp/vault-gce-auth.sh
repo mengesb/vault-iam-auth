@@ -106,7 +106,6 @@
 _SELF="${0##*/}"
 _HERE="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 DEBUG="${DEBUG:-false}"
-METADATA="${GCE_METADATA_MOCK:-http://google.metadata.internal}"
 
 # @internal
 function usage() {
@@ -217,7 +216,6 @@ function vault_gce_auth() {
   [[ "${port}" -eq 80 || "${port}" -eq 443 || -z "${port}" ]] && port="" || port=":${port}"
   vault_role="${vault_role##*/}"
 
-  #jwt=$(curl -s -G -H "Metadata-Flavor: Google" -H "Host: metadata.google.internal" --data-urlencode "audience=${proto}://${host}${port}/auth/${vault_mount}/role/${vault_role}" --data-urlencode "format=full" ${METADATA}/computeMetadata/v1/instance/service-accounts/default/identity)
   jwt=$(gcp_identity "${proto}://${host}${port}/auth/${vault_mount}/role/${vault_role}")
 
   data="$(cat <<-EOJ
