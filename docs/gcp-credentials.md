@@ -46,7 +46,7 @@ $ url_encode "audience=https://vault"
 
 #### Arguments
 
-* # @arg1 $1 string Data to encode in URL safe format
+* **$1** (string): Data to encode in URL safe format
 
 ### gcp_identity()
 
@@ -62,7 +62,7 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjEyMzQ1Njc4OTBhYmNkZWYxMjM0NTY3ODkwYWJjZGVmMTIzNDU2
 
 #### Arguments
 
-* # @arg1 $1 string Audience to request JWT token for
+* **$1** (string): Audience to request JWT token for
 
 ### gcp_service_accounts()
 
@@ -80,5 +80,5 @@ $ gcp_service_accounts "default"
 
 #### Arguments
 
-* # @arg1 $1 string Google Service Account (Default: default)
+* **$1** (string): Google Service Account (Default: default)
 
