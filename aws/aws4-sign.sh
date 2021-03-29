@@ -15,6 +15,8 @@ DEBUG="${DEBUG:-false}"
 # @description
 #   Generates a HMAC SHA256 digest with date and AWS_SECRET_ACCESS_KEY
 #
+# @noarg
+#
 # @example
 #   $ source aws/aws4-sign.sh
 #   $ printf '%s' $(TZ=Z date +%Y%m%dT%H%M%SZ) | AWS4_HMAC_SHA256 "key:AWS4v/12345678901" # AWS_SECRET_ACCESS_KEY
@@ -26,12 +28,12 @@ function AWS4_HMAC_SHA256() {
 # @description
 #   Generates a SHA256 digest of the iam_request_body
 #
+# @noarg
+#
 # @example
 #   $ source aws/aws4-sign.sh
 #   $ printf '%s' "Action=GetCallerIdentity&Version=2011-06-15" | AWS4_SHA256
 #   ab821ae955788b0e33ebd34c208442ccfc2d406e2edc5e7a39bd6458fbb4f843
-#
-# @noarg
 function AWS4_SHA256() {
   openssl dgst -sha256 -hex 2>/dev/null | awk '{print $2}'
 }
@@ -39,12 +41,12 @@ function AWS4_SHA256() {
 # @description
 #   Encodes a string to base64
 #
+# @noarg
+#
 # @example
 #   $ source aws/aws4-sign.sh
 #   $ printf '%s' "https://sts.amazon.com/" | AWS4_BASE64
 #   aHR0cHM6Ly9zdHMuYW1hem9uLmNvbS8=
-#
-# @noarg
 function AWS4_BASE64() {
   openssl base64 -A
 }

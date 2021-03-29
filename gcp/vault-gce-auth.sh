@@ -191,6 +191,8 @@ source "${_HERE}/gcp-credentials.sh"
 # @description
 #   Generates JSON material for login
 #
+# @noargs
+#
 # @example
 #   $ gcp/vault-gce-auth.sh -r my-vault-role
 #   {
@@ -198,8 +200,6 @@ source "${_HERE}/gcp-credentials.sh"
 #     "http_request_method": "POST",
 #     "jwt": "[[base64 encoded material]]"
 #   }
-#
-# @noargs
 function vault_gce_auth() {
   local proto host port url
   local jwt vault_addr vault_mount vault_role

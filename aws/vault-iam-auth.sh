@@ -6,6 +6,9 @@
 
 # @name vault-iam-auth
 # @brief Generate JSON material to log into a Vault AWS authentication backend using the instances AWS IAM instance profile
+#
+# @noarg
+#
 # @description
 #   <!-- markdownlint-disable-file MD012 -->
 #   This script uses the AWS IAM method for logging into a Vault AWS
@@ -140,6 +143,8 @@ source "${_HERE}/aws4-sign.sh"
 
 # @description
 #   Generates JSON material for login
+#
+# @noarg
 #
 # @example
 #   $ aws/vault-iam-auth.sh -r my-vault-role

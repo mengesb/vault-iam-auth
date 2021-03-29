@@ -20,6 +20,8 @@ METADATA="${EC2_METADATA_MOCK:-http://169.254.169.254/2020-10-27/meta-data}"
 # @description
 #   Acquires your instance profile ARN from the metadata API
 #
+# @noarg
+#
 # @example
 #   $ source aws/aws-credentials.sh
 #   $ aws_instance_profile_arn
@@ -35,6 +37,8 @@ function aws_instance_profile_arn() {
 # @description
 #   Acquires your profile name from aws_instance_profile_arn() function
 #
+# @noarg
+#
 # @example
 #   $ source aws/aws-credentials.sh
 #   $ aws_instance_profile_name
@@ -45,6 +49,8 @@ function aws_instance_profile_name() {
 
 # @description
 #   Acquires your security credentials for your AWS instance profile
+#
+# @noarg
 #
 # @example
 #   $ source aws/aws-credentials.sh
@@ -65,6 +71,8 @@ function aws_credentials() {
 # @description
 #   Acquires your AWS Access Key ID from aws_credentials() function
 #
+# @noarg
+#
 # @example
 #   $ source aws/aws-credentials.sh
 #   $ aws_access_key_id
@@ -79,6 +87,8 @@ function aws_access_key_id() {
 
 # @description
 #   Acquires your AWS Secret Access Key from aws_credentials() function
+#
+# @noarg
 #
 # @example
 #   $ source aws/aws-credentials.sh
@@ -95,6 +105,8 @@ function aws_secret_access_key() {
 # @description
 #   Acquires your AWS Session Token from aws_credentials() function
 #
+# @noarg
+#
 # @example
 #   $ source aws/aws-credentials.sh
 #   $ aws_session_token
@@ -109,6 +121,8 @@ function aws_session_token() {
 
 # @description
 #   Outputs environment variable exports for your AWS credentials
+#
+# @noarg
 #
 # @example
 #   $ aws/aws-credentials.sh
