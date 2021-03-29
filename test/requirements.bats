@@ -15,6 +15,12 @@ load 'libs/bats-assert/load'
   assert_output --regexp '^v[1-9]+\.[0-9]+\.[0-9]+$'
 }
 
+@test "Requirements: docker" {
+  run docker --version
+  assert_success
+  assert_output --regexp '[1-9]+([0-9]+)?\.[0-9]+\.[0-9]+'
+}
+
 @test "Requirements: shdoc" {
   if ! command -v shdoc > /dev/null; then
     skip "SKIPPED: shdoc not part of \$PATH"
