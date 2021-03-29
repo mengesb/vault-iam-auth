@@ -40,9 +40,13 @@ jobs:
         if git diff-index --quiet HEAD; then
           echo "No shell documentation changes detected"
         else
-          git ls-files --others --exclude-standard || echo "Nothing to commit"
           git config user.email github-actions@github.com
           git config user.name github-actions
+
+          for F in $(git ls-files --others --exclude-standard); do
+            git add "${F}"
+          done
+
           git commit -am "shdoc: Automated shell script document updates" > /dev/null || echo "Nothing to commit"
           git push --quiet
         fi

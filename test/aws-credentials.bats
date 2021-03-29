@@ -9,7 +9,6 @@ function setup_file() {
 }
 
 function teardown_file() {
-  #pkill ec2-metadata-mock
   unset EC2_METADATA_MOCK
 }
 
