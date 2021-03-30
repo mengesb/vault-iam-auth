@@ -33,8 +33,10 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         for FILE in $(find . -type f -iname "*.sh" | grep -v test | sed 's/\.\///'); do
-          BAREFILE="${FILE##*/}"
-          shdoc < ${FILE} > docs/${BAREFILE:0:-3}.md
+          TARGET_DIR=$(dirname "${FILE}")
+          [ -d "docs/${TARGET_DIR}" ] || mkdir docs/${TARGET_DIR}
+          TARGETFILE="${FILE%.sh}.md"
+          shdoc < ${FILE} > docs/${TARGETFILE}
         done
 
         if git diff-index --quiet HEAD; then
