@@ -18,14 +18,20 @@ The following scripts are available for the AWS platform
 | Name | File | Documentation | Purpose |
 | ---- | ---- | ------------- | ------- |
 | python-vault-iam | [python-vault-iam.py](aws/python-vault-iam.py) | | script |
-| vault-iam-auth | [vault-iam-auth.sh](aws/vault-iam-auth.sh) | [vault-iam-auth.md](docs/vault-iam-auth.md) | script |
-| vault-ec2-auth | TBD<!-- [vault-ec2-auth.sh](aws/vault-ec2-auth.sh) --> | TBD<!-- [vault-ec2-auth.md](docs/vault-ec2-auth.md)  --> | TBD<!-- script --> |
-| aws4-sign | [aws4-sign.sh](aws/aws4-sign.sh) | [aws4-sign.md](docs/aws4-sign.md) | library |
-| aws-credentials | [aws-credentials.sh](aws/aws-credentials.sh) | [aws-credentials.md](docs/aws-credentials.md) | script/library |
+| vault-iam-auth | [vault-iam-auth.sh](aws/vault-iam-auth.sh) | [vault-iam-auth.md](docs/aws/vault-iam-auth.md) | script |
+| vault-ec2-auth | TBD<!-- [vault-ec2-auth.sh](aws/vault-ec2-auth.sh) --> | TBD<!-- [vault-ec2-auth.md](docs/aws/vault-ec2-auth.md)  --> | script |
+| aws4-sign | [aws4-sign.sh](aws/aws4-sign.sh) | [aws4-sign.md](docs/aws/aws4-sign.md) | library |
+| aws-credentials | [aws-credentials.sh](aws/aws-credentials.sh) | [aws-credentials.md](docs/aws/aws-credentials.md) | script/library |
 
 ### GCP
 
-Currently there are no scripts for the GCP platform. Check back later for future updates.
+The following scripts are available for the AWS platform
+
+| Name | File | Documentation | Purpose |
+| ---- | ---- | ------------- | ------- |
+| vault-iam-auth | TBD<!-- [vault-iam-auth.sh](gcp/vault-iam-auth.sh) --> | TBD<!-- [vault-iam-auth.md](docs/gcp/vault-gce-auth.md) --> | scipt |
+| vault-gce-auth | [vault-gce-auth.sh](gcp/vault-gce-auth.sh) | [vault-gce-auth.md](docs/gcp/vault-gce-auth.md) | scipt |
+| gcp-credentials | [gcp-credentials.sh](gcp/gcp-credentials.sh) | [gcp-credentials.md](docs/gcp/gcp-credentials.md) | library |
 
 ### Functions
 
@@ -33,7 +39,7 @@ Scripts in the [functions](functions) directory support scripts beyond a single 
 
 | Name | File | Documentation | Purpose |
 | ---- | ---- | ------------- | ------- |
-| parse-url | [parse-url.sh](functions/parse-url.sh) | [parse-url.md](docs/parse-url.md) | script/library |
+| parse-url | [parse-url.sh](functions/parse-url.sh) | [parse-url.md](docs/functions/parse-url.md) | script/library |
 
 ## Contributing
 
