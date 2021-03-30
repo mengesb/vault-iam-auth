@@ -25,7 +25,7 @@ The following scripts are available for the AWS platform
 
 ### GCP
 
-The following scripts are available for the AWS platform
+The following scripts are available for the GCP platform
 
 | Name | File | Documentation | Purpose |
 | ---- | ---- | ------------- | ------- |
