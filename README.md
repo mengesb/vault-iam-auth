@@ -40,6 +40,7 @@ Scripts in the [functions](functions) directory support scripts beyond a single 
 | Name | File | Documentation | Purpose |
 | ---- | ---- | ------------- | ------- |
 | parse-url | [parse-url.sh](functions/parse-url.sh) | [parse-url.md](docs/functions/parse-url.md) | script/library |
+| jwt-decode | [jwt-decode.sh](functions/jwt-decode.sh) | [jwt-decode.md](docs/functions/jwt-decode.md) | script/library |
 
 ## Contributing
 
