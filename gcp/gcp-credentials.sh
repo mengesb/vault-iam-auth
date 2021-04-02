@@ -90,26 +90,6 @@ function gcp_identity() {
 }
 
 # @description
-#   TBD
-#
-# @arg $1 string Audience to request JWT token header
-#
-# @example
-#   TBD
-function gcp_jwt_header() {
-  local audience
-  local identity jwt_header
-
-  audience="audience=${1}"
-  identity=$(gcp_identity "${audience}")
-
-  jwt_header=$(echo "${identity}" | cut -d. -f1)
-  jwt_header="${jwt_header}=="
-
-  echo -n  "${jwt_header}" | base64 -d
-}
-
-# @description
 #   Returns information about a service accunt, or the default if none passed
 #
 # @arg $1 string Google Service Account (Default: default)
