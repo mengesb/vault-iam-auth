@@ -16,6 +16,7 @@ This code handles environments where `jq` may not be available.
 * [headers()](#headers)
 * [url_encode()](#url_encode)
 * [gcp_identity()](#gcp_identity)
+* [gcp_jwt_header()](#gcp_jwt_header)
 * [gcp_service_accounts()](#gcp_service_accounts)
 
 ### headers()
@@ -63,6 +64,20 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjEyMzQ1Njc4OTBhYmNkZWYxMjM0NTY3ODkwYWJjZGVmMTIzNDU2
 #### Arguments
 
 * **$1** (string): Audience to request JWT token for
+
+### gcp_jwt_header()
+
+TBD
+
+#### Example
+
+```bash
+TBD
+```
+
+#### Arguments
+
+* **$1** (string): Audience to request JWT token header
 
 ### gcp_service_accounts()
 
