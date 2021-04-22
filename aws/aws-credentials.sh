@@ -65,7 +65,16 @@ function aws_instance_profile_name() {
 #           "Expiration": "2020-04-02T00:49:51Z"
 #   }
 function aws_credentials() {
-  curl -s "${METADATA}/iam/security-credentials/$(aws_instance_profile_name)"
+  local credentials profile
+
+  credentials=$(curl -s "${METADATA}/iam/security-credentials/$(aws_instance_profile_name)")
+
+  if [[ -n "${credentials}" ]]; then
+    profile=$(curl -s "${METADATA}/iam/security-credentials/")
+    credentials=$(curl -s "${METADATA}/iam/security-credentials/${profile}")
+  fi
+
+  echo "${credentials}"
 }
 
 # @description
