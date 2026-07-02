@@ -1,0 +1,59 @@
+---
+title: Vault IAM Auth - High-Level Architecture
+---
+flowchart LR
+    subgraph TFE["Terraform Enterprise"]
+        direction TB
+        WS1["Workspace A<br/>(Credential Provider)"]
+        WS2["Workspace B<br/>(Consumer via Run Trigger)"]
+    end
+
+    subgraph EC2["TFE Runner (EC2 Instance)"]
+        direction TB
+        EXT["External Data Source<br/>(vault-iam-auth.sh)"]
+        VP["Vault Provider"]
+        EPHEM["vault_aws_access_credentials<br/>(Ephemeral Resource)"]
+        AWSP["AWS Provider<br/>(JIT Credentials)"]
+    end
+
+    subgraph AWS_Services["AWS"]
+        direction TB
+        IMDS["EC2 Instance<br/>Metadata Service<br/>(169.254.169.254)"]
+        STS["AWS STS<br/>(GetCallerIdentity)"]
+        TARGET["Target AWS Account<br/>Resources"]
+    end
+
+    subgraph Vault["HashiCorp Vault"]
+        direction TB
+        AUTH["AWS Auth Method<br/>(IAM Auth)"]
+        SECRET["AWS Secrets Engine<br/>(STS / Assumed Role)"]
+    end
+
+    %% Primary AWS Flow
+    EXT -->|"1. Get IAM credentials"| IMDS
+    IMDS -->|"2. AccessKeyId, SecretAccessKey,<br/>SessionToken"| EXT
+    EXT -->|"3. Signed STS request<br/>(AWS Sig v4)"| AUTH
+    AUTH -->|"4. Verify caller identity"| STS
+    STS -->|"5. Identity confirmed"| AUTH
+    AUTH -->|"6. Vault Token"| EXT
+    EXT -->|"7. Token to provider"| VP
+    VP --> EPHEM
+    EPHEM -->|"8. Request AWS creds"| SECRET
+    SECRET -->|"9. Temporary AWS<br/>credentials (STS)"| EPHEM
+    EPHEM -->|"10. Configure"| AWSP
+    AWSP -->|"11. Manage resources"| TARGET
+
+    %% Cross-workspace flow
+    WS1 -->|"Sensitive outputs<br/>(remote_state)"| WS2
+    WS1 -.->|"Run Trigger"| WS2
+
+    %% Styling
+    classDef primary fill:#2196F3,stroke:#1565C0,color:#fff
+    classDef vault fill:#FFD600,stroke:#F9A825,color:#000
+    classDef aws fill:#FF9800,stroke:#E65100,color:#fff
+    classDef tfe fill:#7B1FA2,stroke:#4A148C,color:#fff
+
+    class EXT,VP,EPHEM,AWSP primary
+    class AUTH,SECRET vault
+    class IMDS,STS,TARGET aws
+    class WS1,WS2 tfe

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="draw.io" type="device">
+  <diagram id="vault-iam-auth-high-level" name="High-Level Architecture">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- TFE Runner Container -->
+        <mxCell id="100" value="TFE Runner (EC2 Instance)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=5 5;fontSize=14;fontStyle=1;verticalAlign=top;align=center;spacingTop=5;strokeColor=#1565C0;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="340" y="80" width="620" height="380" as="geometry" />
+        </mxCell>
+
+        <!-- External Data Source -->
+        <mxCell id="101" value="External Data Source&lt;br&gt;&lt;i&gt;(vault-iam-auth.sh)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2196F3;fontColor=#FFFFFF;strokeColor=#1565C0;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="380" y="140" width="180" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Vault Provider -->
+        <mxCell id="102" value="Vault Provider" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2196F3;fontColor=#FFFFFF;strokeColor=#1565C0;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="420" y="260" width="140" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Ephemeral Resource -->
+        <mxCell id="103" value="vault_aws_access_credentials&lt;br&gt;&lt;i&gt;(Ephemeral Resource)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2196F3;fontColor=#FFFFFF;strokeColor=#1565C0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="610" y="260" width="200" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- AWS Provider -->
+        <mxCell id="104" value="AWS Provider&lt;br&gt;&lt;i&gt;(JIT Credentials)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2196F3;fontColor=#FFFFFF;strokeColor=#1565C0;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="640" y="380" width="160" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- AWS Services Container -->
+        <mxCell id="200" value="AWS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=5 5;fontSize=14;fontStyle=1;verticalAlign=top;align=center;spacingTop=5;strokeColor=#E65100;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="80" width="220" height="400" as="geometry" />
+        </mxCell>
+
+        <!-- EC2 IMDS -->
+        <mxCell id="201" value="EC2 Instance&lt;br&gt;Metadata Service&lt;br&gt;&lt;i&gt;(169.254.169.254)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF9800;fontColor=#FFFFFF;strokeColor=#E65100;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1090" y="120" width="160" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- AWS STS -->
+        <mxCell id="202" value="AWS STS&lt;br&gt;&lt;i&gt;(GetCallerIdentity)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF9800;fontColor=#FFFFFF;strokeColor=#E65100;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1090" y="240" width="160" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Target Resources -->
+        <mxCell id="203" value="Target AWS Account&lt;br&gt;Resources" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF9800;fontColor=#FFFFFF;strokeColor=#E65100;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1090" y="370" width="160" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Vault Container -->
+        <mxCell id="300" value="HashiCorp Vault" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=5 5;fontSize=14;fontStyle=1;verticalAlign=top;align=center;spacingTop=5;strokeColor=#F9A825;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="340" y="510" width="360" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- AWS Auth Method -->
+        <mxCell id="301" value="AWS Auth Method&lt;br&gt;&lt;i&gt;(IAM Auth)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFD600;fontColor=#000000;strokeColor=#F9A825;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="370" y="560" width="150" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- AWS Secrets Engine -->
+        <mxCell id="302" value="AWS Secrets Engine&lt;br&gt;&lt;i&gt;(STS / Assumed Role)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFD600;fontColor=#000000;strokeColor=#F9A825;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="550" y="560" width="170" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- TFE Container -->
+        <mxCell id="400" value="Terraform Enterprise" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=5 5;fontSize=14;fontStyle=1;verticalAlign=top;align=center;spacingTop=5;strokeColor=#4A148C;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="40" y="510" width="240" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- Workspace A -->
+        <mxCell id="401" value="Workspace A&lt;br&gt;&lt;i&gt;(Credential Provider)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7B1FA2;fontColor=#FFFFFF;strokeColor=#4A148C;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="80" y="550" width="160" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Workspace B -->
+        <mxCell id="402" value="Workspace B&lt;br&gt;&lt;i&gt;(Consumer via Run Trigger)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7B1FA2;fontColor=#FFFFFF;strokeColor=#4A148C;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="80" y="640" width="160" height="50" as="geometry" />
+        </mxCell>
+
+
+        <!-- FLOW ARROWS -->
+
+        <!-- 1. Get IAM credentials -->
+        <mxCell id="e1" value="1. Get IAM credentials" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;fontStyle=1;strokeColor=#333333;strokeWidth=1.5;" edge="1" source="101" target="201" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 2. Credentials returned -->
+        <mxCell id="e2" value="2. AccessKeyId, SecretAccessKey, SessionToken" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=9;strokeColor=#666666;strokeWidth=1;dashed=1;" edge="1" source="201" target="101" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1030" y="170" />
+              <mxPoint x="1030" y="195" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 3. Signed STS request to Vault -->
+        <mxCell id="e3" value="3. Signed STS request (AWS Sig v4)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;fontStyle=1;strokeColor=#333333;strokeWidth=1.5;" edge="1" source="101" target="301" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 4. Vault verifies via STS -->
+        <mxCell id="e4" value="4. Verify caller identity" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;strokeColor=#333333;strokeWidth=1.5;" edge="1" source="301" target="202" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="445" y="500" />
+              <mxPoint x="1050" y="500" />
+              <mxPoint x="1050" y="270" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 5. Identity confirmed -->
+        <mxCell id="e5" value="5. Identity confirmed" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=9;strokeColor=#666666;strokeWidth=1;dashed=1;" edge="1" source="202" target="301" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1020" y="290" />
+              <mxPoint x="1020" y="520" />
+              <mxPoint x="445" y="520" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 6. Vault Token returned -->
+        <mxCell id="e6" value="6. Vault Token" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;fontStyle=1;strokeColor=#333333;strokeWidth=1.5;" edge="1" source="301" target="102" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="370" y="540" />
+              <mxPoint x="370" y="285" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 7. Token to Vault Provider -->
+        <mxCell id="e7" value="7. Token" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;strokeColor=#333333;strokeWidth=1.5;" edge="1" source="101" target="102" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 8. Request AWS creds -->
+        <mxCell id="e8" value="8. Request AWS creds" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;fontStyle=1;strokeColor=#333333;strokeWidth=1.5;" edge="1" source="102" target="302" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="560" y="290" />
+              <mxPoint x="560" y="540" />
+              <mxPoint x="635" y="540" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 9. Temporary AWS creds -->
+        <mxCell id="e9" value="9. Temporary AWS credentials (STS)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=9;strokeColor=#333333;strokeWidth=1.5;" edge="1" source="302" target="103" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 10. Configure AWS Provider -->
+        <mxCell id="e10" value="10. Configure" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;strokeColor=#333333;strokeWidth=1.5;" edge="1" source="103" target="104" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 11. Manage resources -->
+        <mxCell id="e11" value="11. Manage resources" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;fontStyle=1;strokeColor=#333333;strokeWidth=1.5;" edge="1" source="104" target="203" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Workspace A -> B (remote_state) -->
+        <mxCell id="e12" value="Sensitive outputs&lt;br&gt;(remote_state)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=9;strokeColor=#7B1FA2;strokeWidth=1.5;" edge="1" source="401" target="402" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Run Trigger -->
+        <mxCell id="e13" value="Run Trigger" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=9;strokeColor=#7B1FA2;strokeWidth=1;dashed=1;" edge="1" source="401" target="402" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="250" y="575" />
+              <mxPoint x="250" y="665" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
