@@ -11,12 +11,12 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
       with:
         ref: ${{ github.event.pull_request.head.ref }}
 
     - name: Checkout shdoc
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
       with:
         path: shdoc
         repository: reconquest/shdoc
