@@ -1,61 +1,37 @@
----
-title: Vault IAM Auth - Data Flow & Trust Boundaries
----
-flowchart TD
-    subgraph TB_INSTANCE["Trust Boundary: EC2 Instance"]
-        direction TB
-        IMDS_REQ["curl 169.254.169.254<br/>/meta-data/iam/security-credentials/"]
-        RAW_CREDS["Raw IAM Credentials<br/>─────────────────<br/>AccessKeyId<br/>SecretAccessKey<br/>SessionToken<br/>Expiration"]
-        SIGNING["AWS Signature v4 Signing<br/>─────────────────<br/>CanonicalRequest = POST + /sts + headers + body<br/>StringToSign = SHA256(CanonicalRequest)<br/>SigningKey = HMAC(date, region, service, secret)<br/>Signature = HMAC(StringToSign, SigningKey)"]
-        PAYLOAD["JSON Payload (script output)<br/>─────────────────<br/>{<br/>  role: instance-profile-name,<br/>  iam_http_request_method: POST,<br/>  iam_request_url: base64(https://sts.amazonaws.com/),<br/>  iam_request_body: base64(Action=GetCallerIdentity&amp;...),<br/>  iam_request_headers: base64({Authorization, x-amz-date, ...})<br/>}"]
-        TF_PROVIDER["Vault Provider receives payload<br/>and calls /v1/auth/aws/login"]
-    end
+sequenceDiagram
+    participant TF as Terraform Plan
+    participant EXT as External Data Source<br/>(aws/vault-iam-auth.sh)
+    participant IMDS as EC2 IMDS<br/>(169.254.169.254)
+    participant VP as Vault Provider
+    participant VAUTH as Vault Auth<br/>(/v1/auth/aws/login)
+    participant STS as AWS STS
+    participant VSE as Vault Secrets Engine<br/>(/v1/aws/creds/:role)
+    participant AWS as AWS Provider
 
-    subgraph TB_VAULT["Trust Boundary: HashiCorp Vault"]
-        direction TB
-        VAULT_DECODE["Vault decodes payload<br/>─────────────────<br/>base64 decode url, body, headers<br/>Reconstructs original HTTP request"]
-        VAULT_REPLAY["Vault replays signed request<br/>to AWS STS GetCallerIdentity"]
-        VAULT_TOKEN["Vault issues client_token<br/>─────────────────<br/>token: hvs.xxxxx<br/>policies: [aws-creds-role]<br/>ttl: 768h"]
-        VAULT_AWS_SE["Vault AWS Secrets Engine<br/>─────────────────<br/>Calls STS AssumeRole or<br/>GetFederationToken with<br/>its own stored AWS creds"]
-    end
+    Note over TF,AWS: Authentication Phase (external data source execution)
+    TF->>EXT: Execute program
+    EXT->>IMDS: GET /meta-data/iam/info
+    IMDS-->>EXT: InstanceProfileArn
+    EXT->>IMDS: GET /meta-data/iam/security-credentials/{profile}
+    IMDS-->>EXT: AccessKeyId, SecretAccessKey, SessionToken
+    Note over EXT: AWS Signature v4 signing:<br/>HMAC(date, region, sts, secret)<br/>Sign(POST sts.amazonaws.com<br/>Action=GetCallerIdentity)
+    EXT-->>TF: JSON {role, iam_http_request_method,<br/>iam_request_url (b64), iam_request_body (b64),<br/>iam_request_headers (b64)}
 
-    subgraph TB_STS["Trust Boundary: AWS STS"]
-        direction TB
-        STS_VERIFY["GetCallerIdentity<br/>─────────────────<br/>Validates signature<br/>Returns: Account, Arn, UserId"]
-        STS_GENERATE["AssumeRole / GetFederationToken<br/>─────────────────<br/>Returns:<br/>  AccessKeyId (temporary)<br/>  SecretAccessKey (temporary)<br/>  SessionToken<br/>  Expiration"]
-    end
+    Note over TF,AWS: Vault Login Phase (provider initialization)
+    TF->>VP: Configure with signed payload
+    VP->>VAUTH: POST /v1/auth/aws/login<br/>{role, iam_request_url, iam_request_body,<br/>iam_request_headers}
+    VAUTH->>STS: Replay signed request:<br/>POST sts.amazonaws.com<br/>Action=GetCallerIdentity
+    STS-->>VAUTH: 200 OK (Account, Arn, UserId)
+    VAUTH-->>VP: client_token (hvs.xxx),<br/>policies, ttl
 
-    subgraph TB_TARGET["Trust Boundary: Target AWS Account"]
-        direction TB
-        TARGET_CREDS["JIT Credentials consumed<br/>─────────────────<br/>access_key = ASIA...<br/>secret_key = (temporary)<br/>session_token = (STS token)<br/>ttl = lease_duration"]
-        TARGET_OPS["AWS API calls<br/>(terraform plan/apply)"]
-    end
+    Note over TF,AWS: Credential Issuance Phase (ephemeral resource)
+    VP->>VSE: GET /v1/aws/creds/:role<br/>(Authorization: hvs.xxx)
+    Note over VSE: Vault uses its own stored<br/>AWS credentials to call STS
+    VSE->>STS: AssumeRole or GetFederationToken
+    STS-->>VSE: Temporary credentials:<br/>AccessKeyId (ASIA...),<br/>SecretAccessKey, SessionToken,<br/>Expiration
+    VSE-->>VP: access_key, secret_key,<br/>security_token, lease_id, lease_duration
 
-    %% Data flow
-    IMDS_REQ -->|"HTTP 200"| RAW_CREDS
-    RAW_CREDS -->|"AccessKeyId + SecretAccessKey"| SIGNING
-    SIGNING -->|"Signed headers + body"| PAYLOAD
-    PAYLOAD -->|"JSON to Vault provider"| TF_PROVIDER
-    TF_PROVIDER ==>|"POST /v1/auth/aws/login<br/>(crosses trust boundary)"| VAULT_DECODE
-    VAULT_DECODE --> VAULT_REPLAY
-    VAULT_REPLAY ==>|"Replayed HTTP request<br/>(crosses trust boundary)"| STS_VERIFY
-    STS_VERIFY ==>|"Identity confirmed<br/>(crosses trust boundary)"| VAULT_REPLAY
-    VAULT_REPLAY --> VAULT_TOKEN
-    VAULT_TOKEN -->|"client_token"| VAULT_AWS_SE
-    VAULT_AWS_SE ==>|"AssumeRole call<br/>(crosses trust boundary)"| STS_GENERATE
-    STS_GENERATE ==>|"Temporary credentials<br/>(crosses trust boundary)"| VAULT_AWS_SE
-    VAULT_AWS_SE ==>|"access_key, secret_key,<br/>session_token, lease_id<br/>(crosses trust boundary)"| TARGET_CREDS
-    TARGET_CREDS --> TARGET_OPS
-
-    %% Styling
-    classDef boundary fill:none,stroke-width:3
-    classDef data fill:#E3F2FD,stroke:#1565C0,color:#000
-    classDef crossing fill:#FFF3E0,stroke:#E65100,color:#000
-    classDef vault fill:#FFFDE7,stroke:#F9A825,color:#000
-    classDef aws fill:#FCE4EC,stroke:#C62828,color:#000
-    classDef target fill:#E8F5E9,stroke:#2E7D32,color:#000
-
-    class IMDS_REQ,RAW_CREDS,SIGNING,PAYLOAD,TF_PROVIDER data
-    class VAULT_DECODE,VAULT_REPLAY,VAULT_TOKEN,VAULT_AWS_SE vault
-    class STS_VERIFY,STS_GENERATE aws
-    class TARGET_CREDS,TARGET_OPS target
+    Note over TF,AWS: Resource Management Phase (plan/apply)
+    VP->>AWS: Configure provider with JIT creds
+    AWS->>STS: API calls signed with temporary creds
+    Note over AWS: Credentials auto-expire<br/>after lease_duration
