@@ -1,54 +1,45 @@
 sequenceDiagram
-    participant TF as Terraform Plan
-    participant EXT as External Data Source<br/>(aws/vault-iam-auth.sh)
-    participant IMDS as EC2 IMDS<br/>(169.254.169.254)
-    participant VP as Vault Provider
-    participant VAUTH as Vault Auth<br/>(/v1/auth/aws/login)
-    participant STS as AWS STS
-    participant VSE as Vault Secrets Engine<br/>(/v1/aws/creds/:role)
-    participant AWS as AWS Provider
-
     box rgb(232,245,253) EC2 Instance Trust Boundary
-        participant TF
-        participant EXT
-        participant IMDS
+        participant TF as Terraform Plan
+        participant EXT as External Data Source<br/>(aws/vault-iam-auth.sh)
+        participant IMDS as EC2 IMDS<br/>(169.254.169.254)
     end
 
     box rgb(255,253,231) Vault Trust Boundary
-        participant VP
-        participant VAUTH
-        participant VSE
+        participant VP as Vault Provider
+        participant VAUTH as Vault Auth<br/>(/v1/auth/aws/login)
+        participant VSE as Vault Secrets Engine<br/>(/v1/aws/creds or sts/:role)
     end
 
     box rgb(252,228,236) AWS Trust Boundary
-        participant STS
-        participant AWS
+        participant STS as AWS STS
+        participant TGTAWS as Target AWS Services
     end
 
-    Note over TF,AWS: Authentication Phase (external data source execution)
+    Note over TF,TGTAWS: Authentication Phase (external data source execution)
     TF->>EXT: Execute program
     EXT->>IMDS: GET /2020-10-27/meta-data/iam/info
     IMDS-->>EXT: InstanceProfileArn
     EXT->>IMDS: GET /2020-10-27/meta-data/iam/security-credentials/{profile}
     IMDS-->>EXT: AccessKeyId, SecretAccessKey, Token
-    Note over EXT: AWS Signature v4:<br/>1. CanonicalRequest = POST / headers body<br/>2. StringToSign = algo + date + scope + hash(canonical)<br/>3. SigningKey = HMAC(HMAC(HMAC(HMAC(AWS4+secret,date),region),sts),aws4_request)<br/>4. Signature = hex(HMAC(SigningKey, StringToSign))
+    Note over EXT: AWS Signature v4:<br/>1. CanonicalRequest = POST / signed headers body<br/>(includes X-Vault-AWS-IAM-Server-Id header)<br/>2. StringToSign = algo + date + scope + hash(canonical)<br/>3. SigningKey = HMAC(HMAC(HMAC(HMAC(AWS4+secret,date),region),sts),aws4_request)<br/>4. Signature = hex(HMAC(SigningKey, StringToSign))
     EXT-->>TF: JSON {role, iam_http_request_method,<br/>iam_request_url (b64), iam_request_body (b64),<br/>iam_request_headers (b64)}
 
-    Note over TF,AWS: Vault Login Phase (provider initialization)
+    Note over TF,TGTAWS: Vault Login Phase (provider initialization)
     TF->>VP: Configure with signed payload
     VP->>VAUTH: POST /v1/auth/aws/login<br/>{role, iam_http_request_method,<br/>iam_request_url (b64), iam_request_body (b64),<br/>iam_request_headers (b64)}
     VAUTH->>STS: Replay signed request:<br/>POST sts.amazonaws.com<br/>Action=GetCallerIdentity&Version=2011-06-15
     STS-->>VAUTH: 200 OK (Account, Arn, UserId)
     VAUTH-->>VP: client_token,<br/>policies, ttl
 
-    Note over TF,AWS: Credential Issuance Phase (ephemeral resource)
-    VP->>VSE: GET /v1/aws/creds/:role<br/>(X-Vault-Token: [vault_token])
+    Note over TF,TGTAWS: Credential Issuance Phase (ephemeral resource)
+    VP->>VSE: GET /v1/aws/creds/:role or /v1/aws/sts/:role<br/>(X-Vault-Token: [vault_token])
     Note over VSE: Vault uses its own stored<br/>AWS credentials to call STS
     VSE->>STS: AssumeRole or GetFederationToken
     STS-->>VSE: Temporary credentials:<br/>AccessKeyId (ASIA...),<br/>SecretAccessKey, SessionToken,<br/>Expiration
     VSE-->>VP: access_key, secret_key,<br/>security_token, lease_id, lease_duration
 
-    Note over TF,AWS: Resource Management Phase (plan/apply)
-    VP->>AWS: Configure provider with JIT creds
-    AWS->>STS: API calls signed with temporary creds
-    Note over AWS: Credentials auto-expire<br/>after lease_duration
+    Note over TF,TGTAWS: Resource Management Phase (plan/apply)
+    VP->>TGTAWS: Configure AWS provider with JIT creds
+    TGTAWS->>TGTAWS: API calls to AWS services<br/>(EC2, S3, IAM, etc.)
+    Note over TGTAWS: Credentials auto-expire<br/>after lease_duration
