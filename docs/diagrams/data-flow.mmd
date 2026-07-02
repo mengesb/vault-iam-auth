@@ -14,7 +14,7 @@ sequenceDiagram
     IMDS-->>EXT: InstanceProfileArn
     EXT->>IMDS: GET /meta-data/iam/security-credentials/{profile}
     IMDS-->>EXT: AccessKeyId, SecretAccessKey, Token
-    Note over EXT: AWS Signature v4 signing:<br/>SigningKey = HMAC(AWS4+secret, date, region, sts, aws4_request)<br/>Signature = HMAC(SigningKey, StringToSign)<br/>Sign(POST sts.amazonaws.com Action=GetCallerIdentity)
+    Note over EXT: AWS Signature v4:<br/>1. CanonicalRequest = POST / headers body<br/>2. StringToSign = algo + date + scope + hash(canonical)<br/>3. SigningKey = HMAC(HMAC(HMAC(HMAC(AWS4+secret,date),region),sts),aws4_request)<br/>4. Signature = hex(HMAC(SigningKey, StringToSign))
     EXT-->>TF: JSON {role, iam_http_request_method,<br/>iam_request_url (b64), iam_request_body (b64),<br/>iam_request_headers (b64)}
 
     Note over TF,AWS: Vault Login Phase (provider initialization)
@@ -25,7 +25,7 @@ sequenceDiagram
     VAUTH-->>VP: client_token (hvs.xxx),<br/>policies, ttl
 
     Note over TF,AWS: Credential Issuance Phase (ephemeral resource)
-    VP->>VSE: GET /v1/aws/creds/:role<br/>(Authorization: hvs.xxx)
+    VP->>VSE: GET /v1/aws/creds/:role<br/>(X-Vault-Token: hvs.xxx)
     Note over VSE: Vault uses its own stored<br/>AWS credentials to call STS
     VSE->>STS: AssumeRole or GetFederationToken
     STS-->>VSE: Temporary credentials:<br/>AccessKeyId (ASIA...),<br/>SecretAccessKey, SessionToken,<br/>Expiration
