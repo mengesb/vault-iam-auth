@@ -3,17 +3,20 @@ name: Generate shell script docs
 on:
   - pull_request
 
+permissions:
+  contents: write
+
 jobs:
   shdoc:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         ref: ${{ github.event.pull_request.head.ref }}
 
     - name: Checkout shdoc
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         path: shdoc
         repository: reconquest/shdoc
@@ -52,4 +55,3 @@ jobs:
           git commit -am "shdoc: Automated shell script document updates" > /dev/null || echo "Nothing to commit"
           git push --quiet
         fi
-        
