@@ -8,7 +8,7 @@ sequenceDiagram
     box rgb(255,253,231) Vault Trust Boundary
         participant VP as Vault Provider
         participant VAUTH as Vault Auth<br/>(/v1/auth/aws/login)
-        participant VSE as Vault Secrets Engine<br/>(/v1/aws/creds or sts/:role)
+        participant VSE as Vault Secrets Engine<br/>(/v1/aws/creds/:role or /v1/aws/sts/:role)
     end
 
     box rgb(252,228,236) AWS Trust Boundary
@@ -40,6 +40,6 @@ sequenceDiagram
     VSE-->>VP: access_key, secret_key,<br/>security_token, lease_id, lease_duration
 
     Note over TF,TGTAWS: Resource Management Phase (plan/apply)
-    VP->>TGTAWS: Configure AWS provider with JIT creds
-    TGTAWS->>TGTAWS: API calls to AWS services<br/>(EC2, S3, IAM, etc.)
+    VP->>TF: Configure AWS provider with JIT creds
+    TF->>TGTAWS: API calls to AWS services<br/>(EC2, S3, IAM, etc.)
     Note over TGTAWS: Credentials auto-expire<br/>after lease_duration
