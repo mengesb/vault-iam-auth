@@ -12,7 +12,7 @@
         </mxCell>
 
         <!-- External Data Source -->
-        <mxCell id="101" value="External Data Source&lt;br&gt;&lt;i&gt;(vault-iam-auth.sh)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2196F3;fontColor=#FFFFFF;strokeColor=#1565C0;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+        <mxCell id="101" value="External Data Source&lt;br&gt;&lt;i&gt;(aws/vault-iam-auth.sh)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2196F3;fontColor=#FFFFFF;strokeColor=#1565C0;fontSize=12;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="380" y="140" width="180" height="60" as="geometry" />
         </mxCell>
 
@@ -126,12 +126,12 @@
           </mxGeometry>
         </mxCell>
 
-        <!-- 6. Vault Token returned -->
-        <mxCell id="e6" value="6. Vault Token" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;fontStyle=1;strokeColor=#333333;strokeWidth=1.5;" edge="1" source="301" target="102" parent="1">
+        <!-- 6. Vault Token returned to external data source -->
+        <mxCell id="e6" value="6. Vault Token" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;fontStyle=1;strokeColor=#333333;strokeWidth=1.5;" edge="1" source="301" target="101" parent="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="370" y="540" />
-              <mxPoint x="370" y="285" />
+              <mxPoint x="370" y="170" />
             </Array>
           </mxGeometry>
         </mxCell>

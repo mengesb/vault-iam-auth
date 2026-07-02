@@ -10,7 +10,7 @@ flowchart LR
 
     subgraph EC2["TFE Runner (EC2 Instance)"]
         direction TB
-        EXT["External Data Source<br/>(vault-iam-auth.sh)"]
+        EXT["External Data Source<br/>(aws/vault-iam-auth.sh)"]
         VP["Vault Provider"]
         EPHEM["vault_aws_access_credentials<br/>(Ephemeral Resource)"]
         AWSP["AWS Provider<br/>(JIT Credentials)"]

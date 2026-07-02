@@ -17,7 +17,7 @@
         </mxCell>
 
         <!-- data.external -->
-        <mxCell id="tf_ext" value="data.external.vault_auth&lt;br&gt;&lt;i&gt;program = vault-iam-auth.sh&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;" vertex="1" parent="1">
+        <mxCell id="tf_ext" value="data.external.vault_auth&lt;br&gt;&lt;i&gt;program = aws/vault-iam-auth.sh&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;" vertex="1" parent="1">
           <mxGeometry x="110" y="160" width="220" height="50" as="geometry" />
         </mxCell>
 
@@ -45,7 +45,7 @@
         <mxCell id="tf_e1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;" edge="1" source="tf_init" target="tf_ext" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="tf_e2" value="executes" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;fontSize=9;" edge="1" source="tf_ext" target="tf_vault" parent="1">
+        <mxCell id="tf_e2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;" edge="1" source="tf_ext" target="tf_vault" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="tf_e3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;" edge="1" source="tf_vault" target="tf_ephem" parent="1">
@@ -64,7 +64,7 @@
         </mxCell>
 
         <!-- vault-iam-auth.sh main -->
-        <mxCell id="main_sh" value="vault-iam-auth.sh&lt;br&gt;&lt;i&gt;(entry point)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+        <mxCell id="main_sh" value="aws/vault-iam-auth.sh&lt;br&gt;&lt;i&gt;(entry point)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontSize=12;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="680" y="80" width="180" height="50" as="geometry" />
         </mxCell>
 
@@ -115,8 +115,8 @@
         </mxCell>
 
         <!-- POST /v1/auth/aws/login -->
-        <mxCell id="v_auth_aws" value="POST /v1/auth/aws/login&lt;br&gt;&lt;i&gt;{role, iam_request_url,&lt;br&gt;iam_request_body,&lt;br&gt;iam_request_headers}&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFDE7;strokeColor=#F9A825;fontSize=10;" vertex="1" parent="1">
-          <mxGeometry x="520" y="630" width="200" height="70" as="geometry" />
+        <mxCell id="v_auth_aws" value="POST /v1/auth/aws/login&lt;br&gt;&lt;i&gt;{role, iam_http_request_method,&lt;br&gt;iam_request_url, iam_request_body,&lt;br&gt;iam_request_headers}&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFDE7;strokeColor=#F9A825;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="520" y="630" width="220" height="80" as="geometry" />
         </mxCell>
 
         <!-- GET /v1/aws/creds/:role -->
@@ -152,12 +152,11 @@
         </mxCell>
 
         <!-- EC2 metadata -> aws-credentials.sh (response) -->
-        <mxCell id="flow_e3" value="AccessKeyId, SecretAccessKey, SessionToken" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#C62828;strokeWidth=1;fontSize=9;dashed=1;" edge="1" source="ec2_md" target="aws4_sh" parent="1">
+        <mxCell id="flow_e3" value="AccessKeyId, SecretAccessKey, SessionToken" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#C62828;strokeWidth=1;fontSize=9;dashed=1;" edge="1" source="ec2_md" target="aws_creds_sh" parent="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="700" y="497" />
-              <mxPoint x="700" y="400" />
-              <mxPoint x="805" y="400" />
+              <mxPoint x="670" y="460" />
+              <mxPoint x="625" y="460" />
             </Array>
           </mxGeometry>
         </mxCell>

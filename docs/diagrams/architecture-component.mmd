@@ -5,7 +5,7 @@ flowchart TB
     subgraph Terraform["Terraform Plan Execution"]
         direction TB
         INIT["terraform init / plan"]
-        EXT_DS["data.external.vault_auth<br/>program = vault-iam-auth.sh"]
+        EXT_DS["data.external.vault_auth<br/>program = aws/vault-iam-auth.sh"]
         VAULT_PROV["provider vault<br/>(token from external)"]
         EPHEM_RES["ephemeral.vault_aws_access_credentials<br/>(reads AWS secrets engine)"]
         AWS_PROV["provider aws<br/>(access_key, secret_key, token)"]
@@ -14,7 +14,7 @@ flowchart TB
 
     subgraph Scripts["vault-iam-auth Scripts"]
         direction TB
-        MAIN["vault-iam-auth.sh<br/>(entry point)"]
+        MAIN["aws/vault-iam-auth.sh<br/>(entry point)"]
 
         subgraph Libraries["Shell Libraries"]
             direction LR
@@ -35,7 +35,7 @@ flowchart TB
 
     subgraph Vault_Server["HashiCorp Vault Server"]
         direction TB
-        V_AUTH_AWS["POST /v1/auth/aws/login<br/>{role, iam_request_url,<br/>iam_request_body,<br/>iam_request_headers}"]
+        V_AUTH_AWS["POST /v1/auth/aws/login<br/>{role, iam_http_request_method,<br/>iam_request_url, iam_request_body,<br/>iam_request_headers}"]
         V_AWS_SE["GET /v1/aws/creds/:role<br/>or /v1/aws/sts/:role"]
     end
 
@@ -47,7 +47,7 @@ flowchart TB
     %% Terraform execution flow
     INIT --> EXT_DS
     EXT_DS -->|"executes"| MAIN
-    EXT_DS --> VAULT_PROV
+    EXT_DS -->|"token"| VAULT_PROV
     VAULT_PROV --> EPHEM_RES
     EPHEM_RES --> AWS_PROV
     AWS_PROV --> RESOURCES
