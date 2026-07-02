@@ -22,7 +22,9 @@ sequenceDiagram
     Note over TF,TGTAWS: Authentication Phase (external data source execution)
     TF->>EXT: Execute program
     EXT->>IMDS: GET /2020-10-27/meta-data/iam/info
-    IMDS-->>EXT: InstanceProfileArn
+    IMDS-->>EXT: InstanceProfileArn (extract profile name)
+    EXT->>IMDS: GET /2020-10-27/meta-data/iam/security-credentials/
+    IMDS-->>EXT: profile name
     EXT->>IMDS: GET /2020-10-27/meta-data/iam/security-credentials/{profile}
     IMDS-->>EXT: AccessKeyId, SecretAccessKey, Token
     Note over EXT: AWS Signature v4:<br/>1. CanonicalRequest = POST / signed headers body<br/>(includes X-Vault-AWS-IAM-Server-Id header)<br/>2. StringToSign = algo + date + scope + hash(canonical)<br/>3. SigningKey = HMAC(HMAC(HMAC(HMAC(AWS4+secret,date),region),sts),aws4_request)<br/>4. Signature = hex(HMAC(SigningKey, StringToSign))
