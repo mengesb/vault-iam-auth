@@ -17,9 +17,9 @@ Will take an URL as an input, and break it into the following components:
 
 ## Index
 
-* [parse_url()](#parse_url)
+* [parse_url](#parse_url)
 
-### parse_url()
+### parse_url
 
 Parse URL string
 

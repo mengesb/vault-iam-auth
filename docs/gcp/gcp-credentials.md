@@ -13,12 +13,12 @@ This code handles environments where `jq` may not be available.
 
 ## Index
 
-* [headers()](#headers)
-* [url_encode()](#url_encode)
-* [gcp_identity()](#gcp_identity)
-* [gcp_service_accounts()](#gcp_service_accounts)
+* [headers](#headers)
+* [url_encode](#url_encode)
+* [gcp_identity](#gcp_identity)
+* [gcp_service_accounts](#gcp_service_accounts)
 
-### headers()
+### headers
 
 Builds headers for curl requests from HEADERS environment variable
 
@@ -30,7 +30,7 @@ $ headers
 -H 'Metadata-Flavor: Google'
 ```
 
-### url_encode()
+### url_encode
 
 Builds url encoding commands for curl requests
 
@@ -48,7 +48,7 @@ $ url_encode "audience=https://vault"
 
 * **$1** (string): Data to encode in URL safe format
 
-### gcp_identity()
+### gcp_identity
 
 Returns a GCE instance identity (JWT token) for the audience requested
 
@@ -64,7 +64,7 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjEyMzQ1Njc4OTBhYmNkZWYxMjM0NTY3ODkwYWJjZGVmMTIzNDU2
 
 * **$1** (string): Audience to request JWT token for
 
-### gcp_service_accounts()
+### gcp_service_accounts
 
 Returns information about a service accunt, or the default if none passed
 

@@ -11,11 +11,18 @@ on:
       - reopened
       - synchronize
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   update_release_draft:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
-      - uses: release-drafter/release-drafter@v5
+      - uses: release-drafter/release-drafter@v6
         with:
           config-name: release-drafter.yml
         env:

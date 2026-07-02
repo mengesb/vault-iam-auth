@@ -12,21 +12,22 @@ on:
 
 jobs:
   unit:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
-    - name: Setup BATS
-      uses: mig4/setup-bats@v1
-      with:
-        bats-version: 1.2.1
-
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         ref: ${{ github.event.pull_request.head.ref }}
         submodules: true
 
+    - name: Setup BATS
+      shell: bash
+      run: |
+        git clone --depth 1 --branch v1.2.1 https://github.com/bats-core/bats-core.git /tmp/bats-core
+        sudo /tmp/bats-core/install.sh /usr/local
+
     - name: Checkout shdoc
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         path: shdoc
         repository: reconquest/shdoc
@@ -35,7 +36,7 @@ jobs:
     - name: Setup requirements
       shell: bash
       run: |
-        sudo curl -Lo /usr/local/bin/ec2-metadata-mock https://github.com/aws/amazon-ec2-metadata-mock/releases/download/v1.8.1/ec2-metadata-mock-`uname | tr '[:upper:]' '[:lower:]'`-amd64
+        sudo curl -Lo /usr/local/bin/ec2-metadata-mock https://github.com/aws/amazon-ec2-metadata-mock/releases/download/v1.13.0/ec2-metadata-mock-`uname | tr '[:upper:]' '[:lower:]'`-amd64
         sudo chmod a+x /usr/local/bin/ec2-metadata-mock
         cd shdoc
         sudo make install

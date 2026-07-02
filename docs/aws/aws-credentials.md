@@ -13,15 +13,15 @@ This code handles environments where `jq` may not be available.
 
 ## Index
 
-* [aws_instance_profile_arn()](#aws_instance_profile_arn)
-* [aws_instance_profile_name()](#aws_instance_profile_name)
-* [aws_credentials()](#aws_credentials)
-* [aws_access_key_id()](#aws_access_key_id)
-* [aws_secret_access_key()](#aws_secret_access_key)
-* [aws_session_token()](#aws_session_token)
-* [aws_environment()](#aws_environment)
+* [aws_instance_profile_arn](#aws_instance_profile_arn)
+* [aws_instance_profile_name](#aws_instance_profile_name)
+* [aws_credentials](#aws_credentials)
+* [aws_access_key_id](#aws_access_key_id)
+* [aws_secret_access_key](#aws_secret_access_key)
+* [aws_session_token](#aws_session_token)
+* [aws_environment](#aws_environment)
 
-### aws_instance_profile_arn()
+### aws_instance_profile_arn
 
 Acquires your instance profile ARN from the metadata API
 
@@ -33,7 +33,7 @@ $ aws_instance_profile_arn
 arn:aws:iam::896453262835:instance-profile/baskinc-role
 ```
 
-### aws_instance_profile_name()
+### aws_instance_profile_name
 
 Acquires your profile name from aws_instance_profile_arn() function
 
@@ -45,7 +45,7 @@ $ aws_instance_profile_name
 baskinc-role
 ```
 
-### aws_credentials()
+### aws_credentials
 
 Acquires your security credentials for your AWS instance profile
 
@@ -65,7 +65,7 @@ $ aws_credentials
 }
 ```
 
-### aws_access_key_id()
+### aws_access_key_id
 
 Acquires your AWS Access Key ID from aws_credentials() function
 
@@ -77,7 +77,7 @@ $ aws_access_key_id
 12345678901
 ```
 
-### aws_secret_access_key()
+### aws_secret_access_key
 
 Acquires your AWS Secret Access Key from aws_credentials() function
 
@@ -89,7 +89,7 @@ $ aws_secret_access_key
 v/12345678901
 ```
 
-### aws_session_token()
+### aws_session_token
 
 Acquires your AWS Session Token from aws_credentials() function
 
@@ -101,7 +101,7 @@ $ aws_session_token
 TEST92test48TEST+y6RpoTEST92test48TEST/8oWVAiBqTEsT5Ky7ty2tEStxC1T==
 ```
 
-### aws_environment()
+### aws_environment
 
 Outputs environment variable exports for your AWS credentials
 

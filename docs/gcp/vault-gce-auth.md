@@ -100,5 +100,24 @@ $ gcp/vault-gce-auth.sh -r my-vault-role
 }
 ```
 
+## Index
 
+* [vault_gce_auth](#vault_gce_auth)
+
+### vault_gce_auth
+
+Generates JSON material for login
+
+#### Example
+
+```bash
+$ gcp/vault-gce-auth.sh -r my-vault-role
+{
+  "role": "my-vault-role",
+  "http_request_method": "POST",
+  "jwt": "[[base64 encoded material]]"
+}
+```
+
+_Function has no arguments._
 
