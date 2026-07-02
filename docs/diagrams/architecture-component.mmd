@@ -1,0 +1,86 @@
+---
+title: Vault IAM Auth - Component Detail
+---
+flowchart TB
+    subgraph Terraform["Terraform Plan Execution"]
+        direction TB
+        INIT["terraform init / plan"]
+        EXT_DS["data.external.vault_auth<br/>program = aws/vault-iam-auth.sh"]
+        VAULT_PROV["provider vault<br/>(login via signed payload)"]
+        EPHEM_RES["ephemeral.vault_aws_access_credentials<br/>(reads AWS secrets engine)"]
+        AWS_PROV["provider aws<br/>(access_key, secret_key, token)"]
+        RESOURCES["AWS Resources<br/>(plan/apply)"]
+    end
+
+    subgraph Scripts["vault-iam-auth Scripts"]
+        direction TB
+        MAIN["aws/vault-iam-auth.sh<br/>(entry point)"]
+
+        subgraph Libraries["Shell Libraries"]
+            direction LR
+            AWS_CREDS["aws-credentials.sh<br/>• aws_instance_profile_name()<br/>• aws_credentials()<br/>• aws_access_key_id()<br/>• aws_secret_access_key()<br/>• aws_session_token()"]
+            AWS4["aws4-sign.sh<br/>• AWS4_HMAC_SHA256()<br/>• AWS4_SHA256()<br/>• AWS4_BASE64()<br/>• AWS4_SIGN()"]
+            PARSE["functions/parse-url.sh<br/>• parse_url()"]
+        end
+
+        MAIN -->|"source"| AWS_CREDS
+        MAIN -->|"source"| AWS4
+        MAIN -->|"source"| PARSE
+    end
+
+    subgraph Metadata["EC2 Metadata Service"]
+        direction LR
+        EC2_MD["EC2 Metadata<br/>169.254.169.254<br/>/meta-data/iam/security-credentials/"]
+    end
+
+    subgraph Vault_Server["HashiCorp Vault Server"]
+        direction TB
+        V_AUTH_AWS["POST /v1/auth/aws/login<br/>{role, iam_http_request_method,<br/>iam_request_url, iam_request_body,<br/>iam_request_headers}"]
+        V_AWS_SE["GET /v1/aws/creds/:role<br/>or /v1/aws/sts/:role"]
+    end
+
+    subgraph AWS_STS["AWS STS"]
+        STS_VERIFY["GetCallerIdentity<br/>(Vault replays signed request)"]
+        STS_ASSUME["AssumeRole / GetFederationToken<br/>(Secrets engine generates creds)"]
+    end
+
+    %% Terraform execution flow
+    INIT --> EXT_DS
+    EXT_DS -->|"executes"| MAIN
+    EXT_DS -->|"signed payload"| VAULT_PROV
+    VAULT_PROV --> EPHEM_RES
+    EPHEM_RES --> AWS_PROV
+    AWS_PROV --> RESOURCES
+
+    %% AWS auth internal flow
+    AWS_CREDS -->|"curl IMDS"| EC2_MD
+    EC2_MD -->|"AccessKeyId<br/>SecretAccessKey<br/>SessionToken"| AWS_CREDS
+    AWS_CREDS -->|"credentials"| AWS4
+    AWS4 -->|"Signed headers<br/>(Authorization, x-amz-date,<br/>x-amz-security-token)"| MAIN
+    PARSE -->|"Vault URL components"| MAIN
+    MAIN -->|"JSON payload<br/>(base64 encoded)"| EXT_DS
+
+    %% Vault auth flow
+    VAULT_PROV -->|"Login with signed payload"| V_AUTH_AWS
+    V_AUTH_AWS -->|"Replay signed request"| STS_VERIFY
+    STS_VERIFY -->|"Identity confirmed"| V_AUTH_AWS
+    V_AUTH_AWS -->|"client_token"| VAULT_PROV
+
+    %% Vault secrets flow
+    EPHEM_RES -->|"Read creds"| V_AWS_SE
+    V_AWS_SE -->|"Generate via"| STS_ASSUME
+    STS_ASSUME -->|"Temporary creds"| V_AWS_SE
+    V_AWS_SE -->|"access_key, secret_key,<br/>security_token, lease_id"| EPHEM_RES
+
+    %% Styling
+    classDef script fill:#E3F2FD,stroke:#1565C0,color:#000
+    classDef lib fill:#FFF3E0,stroke:#E65100,color:#000
+    classDef tf fill:#E8F5E9,stroke:#2E7D32,color:#000
+    classDef vault fill:#FFFDE7,stroke:#F9A825,color:#000
+    classDef cloud fill:#FCE4EC,stroke:#C62828,color:#000
+
+    class MAIN script
+    class AWS_CREDS,AWS4,PARSE lib
+    class INIT,EXT_DS,VAULT_PROV,EPHEM_RES,AWS_PROV,RESOURCES tf
+    class V_AUTH_AWS,V_AWS_SE vault
+    class EC2_MD,STS_VERIFY,STS_ASSUME cloud
