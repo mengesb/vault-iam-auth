@@ -22,7 +22,7 @@
         </mxCell>
 
         <!-- provider vault -->
-        <mxCell id="tf_vault" value="provider vault&lt;br&gt;&lt;i&gt;(token from external)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;" vertex="1" parent="1">
+        <mxCell id="tf_vault" value="provider vault&lt;br&gt;&lt;i&gt;(login via signed payload)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;" vertex="1" parent="1">
           <mxGeometry x="140" y="260" width="160" height="50" as="geometry" />
         </mxCell>
 
@@ -45,7 +45,7 @@
         <mxCell id="tf_e1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;" edge="1" source="tf_init" target="tf_ext" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="tf_e2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;" edge="1" source="tf_ext" target="tf_vault" parent="1">
+        <mxCell id="tf_e2" value="signed payload" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;fontSize=9;" edge="1" source="tf_ext" target="tf_vault" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="tf_e3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;" edge="1" source="tf_vault" target="tf_ephem" parent="1">
@@ -84,8 +84,8 @@
         </mxCell>
 
         <!-- parse-url.sh -->
-        <mxCell id="parse_sh" value="parse-url.sh&lt;br&gt;&lt;hr&gt;&lt;font style=&quot;font-size:9px&quot;&gt;• parse_url()&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;fontSize=10;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="900" y="200" width="120" height="80" as="geometry" />
+        <mxCell id="parse_sh" value="functions/parse-url.sh&lt;br&gt;&lt;hr&gt;&lt;font style=&quot;font-size:9px&quot;&gt;• parse_url()&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;fontSize=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="900" y="200" width="140" height="80" as="geometry" />
         </mxCell>
 
         <!-- Source edges from main -->

@@ -99,13 +99,18 @@
           </mxGeometry>
         </mxCell>
 
-        <!-- 3. Signed STS request to Vault -->
-        <mxCell id="e3" value="3. Signed STS request (AWS Sig v4)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;fontStyle=1;strokeColor=#333333;strokeWidth=1.5;" edge="1" source="101" target="301" parent="1">
+        <!-- 3. Signed payload to Vault Provider -->
+        <mxCell id="e3" value="3. Signed login payload" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;fontStyle=1;strokeColor=#333333;strokeWidth=1.5;" edge="1" source="101" target="102" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- 4. Vault verifies via STS -->
-        <mxCell id="e4" value="4. Verify caller identity" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;strokeColor=#333333;strokeWidth=1.5;" edge="1" source="301" target="202" parent="1">
+        <!-- 4. Vault Provider calls auth/aws/login -->
+        <mxCell id="e4" value="4. POST /auth/aws/login" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;fontStyle=1;strokeColor=#333333;strokeWidth=1.5;" edge="1" source="102" target="301" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 5. Vault verifies via STS -->
+        <mxCell id="e5" value="5. Verify caller identity" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;strokeColor=#333333;strokeWidth=1.5;" edge="1" source="301" target="202" parent="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="445" y="500" />
@@ -115,8 +120,8 @@
           </mxGeometry>
         </mxCell>
 
-        <!-- 5. Identity confirmed -->
-        <mxCell id="e5" value="5. Identity confirmed" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=9;strokeColor=#666666;strokeWidth=1;dashed=1;" edge="1" source="202" target="301" parent="1">
+        <!-- 6. Identity confirmed -->
+        <mxCell id="e6" value="6. Identity confirmed" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=9;strokeColor=#666666;strokeWidth=1;dashed=1;" edge="1" source="202" target="301" parent="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="1020" y="290" />
@@ -126,19 +131,14 @@
           </mxGeometry>
         </mxCell>
 
-        <!-- 6. Vault Token returned to external data source -->
-        <mxCell id="e6" value="6. Vault Token" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;fontStyle=1;strokeColor=#333333;strokeWidth=1.5;" edge="1" source="301" target="101" parent="1">
+        <!-- 7. Vault Token returned to Vault Provider -->
+        <mxCell id="e7" value="7. Vault Token" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;fontStyle=1;strokeColor=#333333;strokeWidth=1.5;" edge="1" source="301" target="102" parent="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="370" y="540" />
-              <mxPoint x="370" y="170" />
+              <mxPoint x="370" y="285" />
             </Array>
           </mxGeometry>
-        </mxCell>
-
-        <!-- 7. Token to Vault Provider -->
-        <mxCell id="e7" value="7. Token" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;strokeColor=#333333;strokeWidth=1.5;" edge="1" source="101" target="102" parent="1">
-          <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
         <!-- 8. Request AWS creds -->

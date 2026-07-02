@@ -6,7 +6,7 @@ flowchart TB
         direction TB
         INIT["terraform init / plan"]
         EXT_DS["data.external.vault_auth<br/>program = aws/vault-iam-auth.sh"]
-        VAULT_PROV["provider vault<br/>(token from external)"]
+        VAULT_PROV["provider vault<br/>(login via signed payload)"]
         EPHEM_RES["ephemeral.vault_aws_access_credentials<br/>(reads AWS secrets engine)"]
         AWS_PROV["provider aws<br/>(access_key, secret_key, token)"]
         RESOURCES["AWS Resources<br/>(plan/apply)"]
@@ -20,7 +20,7 @@ flowchart TB
             direction LR
             AWS_CREDS["aws-credentials.sh<br/>• aws_instance_profile_name()<br/>• aws_credentials()<br/>• aws_access_key_id()<br/>• aws_secret_access_key()<br/>• aws_session_token()"]
             AWS4["aws4-sign.sh<br/>• AWS4_HMAC_SHA256()<br/>• AWS4_SHA256()<br/>• AWS4_BASE64()<br/>• AWS4_SIGN()"]
-            PARSE["parse-url.sh<br/>• parse_url()"]
+            PARSE["functions/parse-url.sh<br/>• parse_url()"]
         end
 
         MAIN -->|"source"| AWS_CREDS
@@ -47,7 +47,7 @@ flowchart TB
     %% Terraform execution flow
     INIT --> EXT_DS
     EXT_DS -->|"executes"| MAIN
-    EXT_DS -->|"token"| VAULT_PROV
+    EXT_DS -->|"signed payload"| VAULT_PROV
     VAULT_PROV --> EPHEM_RES
     EPHEM_RES --> AWS_PROV
     AWS_PROV --> RESOURCES
