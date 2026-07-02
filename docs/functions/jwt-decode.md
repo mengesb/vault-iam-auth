@@ -9,16 +9,16 @@ This library decodes JWT material
 
 ## Index
 
-* [b64_padding()](#b64_padding)
-* [b64_tr()](#b64_tr)
-* [json_kv()](#json_kv)
-* [google_pubkey()](#google_pubkey)
-* [google_verify()](#google_verify)
-* [jwt_header_json()](#jwt_header_json)
-* [jwt_payload_json()](#jwt_payload_json)
-* [jwt_display()](#jwt_display)
+* [b64_padding](#b64_padding)
+* [b64_tr](#b64_tr)
+* [json_kv](#json_kv)
+* [google_pubkey](#google_pubkey)
+* [google_verify](#google_verify)
+* [jwt_header_json](#jwt_header_json)
+* [jwt_payload_json](#jwt_payload_json)
+* [jwt_display](#jwt_display)
 
-### b64_padding()
+### b64_padding
 
 Parses a base64 padded JWT string
 
@@ -38,7 +38,7 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjEyMzQ1Njc4OTBhYmNkZWYwMTIzNDU2Nzg5MGFiY2RlZjEyMzQ1
 
 * base64 encoded string with propper padding/terminators
 
-### b64_tr()
+### b64_tr
 
 Base64 translate of a JWT encoded string
 
@@ -58,7 +58,7 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjEyMzQ1Njc4OTBhYmNkZWYwMTIzNDU2Nzg5MGFiY2RlZjEyMzQ1
 
 * base64 encoded string replacing '-_' with '+/'
 
-### json_kv()
+### json_kv
 
 Parses JSON string and returns value of key requested
 
@@ -79,7 +79,7 @@ RS256
 
 * value of key searched for, or 'null' if not found
 
-### google_pubkey()
+### google_pubkey
 
 Google OAuth2 public key signature fetch
 
@@ -99,7 +99,7 @@ $ google_pubkey '13e8d45a43cb2242154c7f4dafac2933fea20374'
 
 * File containing public key material
 
-### google_verify()
+### google_verify
 
 Google OAuth2 veriification of JWT header + payload (i.e. body) with
 signature
@@ -120,7 +120,7 @@ Verified OK
 
 * Message indicating success or failure of JWT verification
 
-### jwt_header_json()
+### jwt_header_json
 
 Parses JWT material and returns decoded JWT header
 
@@ -140,7 +140,7 @@ $ jwt_header_json 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjEyMzQ1Njc4OTBhYmNkZWYwMTIzNDU2N
 
 * base64 decoded JWT header
 
-### jwt_payload_json()
+### jwt_payload_json
 
 Parses JWT material and returns decoded JWT payload
 
@@ -160,7 +160,7 @@ $ jwt_payload_json 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjEyMzQ1Njc4OTBhYmNkZWYwMTIzNDU2
 
 * base64 decoded JWT payload
 
-### jwt_display()
+### jwt_display
 
 Parses JWT material and returns environment variables
 

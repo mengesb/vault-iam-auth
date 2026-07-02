@@ -58,5 +58,26 @@ $ aws/vault-iam-auth.sh -s https://my-internal-vault.domain.tld
 }
 ```
 
+## Index
 
+* [vault_iam_auth](#vault_iam_auth)
+
+### vault_iam_auth
+
+Generates JSON material for login
+
+#### Example
+
+```bash
+$ aws/vault-iam-auth.sh -r my-vault-role
+{
+  "role": "my-vault-role",
+  "iam_http_request_method": "POST",
+  "iam_request_url": "[[base64 encoded material]]",
+  "iam_request_body": "[[base64 encoded material]]",
+  "iam_request_headers": "[[base64 encoded material]]"
+}
+```
+
+_Function has no arguments._
 
