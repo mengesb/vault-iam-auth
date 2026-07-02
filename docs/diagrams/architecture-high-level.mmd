@@ -33,7 +33,7 @@ flowchart LR
     EXT -->|"1. Get IAM credentials"| IMDS
     IMDS -->|"2. AccessKeyId, SecretAccessKey,<br/>SessionToken"| EXT
     EXT -->|"3. Signed login payload"| VP
-    VP -->|"4. POST /auth/aws/login<br/>(signed payload)"| AUTH
+    VP -->|"4. POST /v1/auth/aws/login<br/>(signed payload)"| AUTH
     AUTH -->|"5. Verify caller identity"| STS
     STS -->|"6. Identity confirmed"| AUTH
     AUTH -->|"7. Vault Token"| VP
