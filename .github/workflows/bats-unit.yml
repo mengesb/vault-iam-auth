@@ -23,7 +23,7 @@ jobs:
     - name: Setup BATS
       shell: bash
       run: |
-        git clone --depth 1 --branch v1.11.1 https://github.com/bats-core/bats-core.git /tmp/bats-core
+        git clone --depth 1 --branch v1.2.1 https://github.com/bats-core/bats-core.git /tmp/bats-core
         sudo /tmp/bats-core/install.sh /usr/local
 
     - name: Checkout shdoc
@@ -50,11 +50,9 @@ jobs:
         echo "Test: test/requirements.bats"
         bats test/requirements.bats
         for f in $(ls test/*.bats | grep -v requirements); do
-          pkill -f ec2-metadata-mock || true
-          sleep 1
           echo "TEST: $f" && bats $f
           RET=$?
+          [[ "${RET}" -eq 0 ]] && sleep 1 && echo ""
           [[ "${RET}" -ne 0 ]] && exit 1
         done
-        pkill -f ec2-metadata-mock || true
         exit "${RET}"
