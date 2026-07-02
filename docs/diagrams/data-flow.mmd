@@ -8,24 +8,41 @@ sequenceDiagram
     participant VSE as Vault Secrets Engine<br/>(/v1/aws/creds/:role)
     participant AWS as AWS Provider
 
+    box rgb(232,245,253) EC2 Instance Trust Boundary
+        participant TF
+        participant EXT
+        participant IMDS
+    end
+
+    box rgb(255,253,231) Vault Trust Boundary
+        participant VP
+        participant VAUTH
+        participant VSE
+    end
+
+    box rgb(252,228,236) AWS Trust Boundary
+        participant STS
+        participant AWS
+    end
+
     Note over TF,AWS: Authentication Phase (external data source execution)
     TF->>EXT: Execute program
-    EXT->>IMDS: GET /meta-data/iam/info
+    EXT->>IMDS: GET /2020-10-27/meta-data/iam/info
     IMDS-->>EXT: InstanceProfileArn
-    EXT->>IMDS: GET /meta-data/iam/security-credentials/{profile}
+    EXT->>IMDS: GET /2020-10-27/meta-data/iam/security-credentials/{profile}
     IMDS-->>EXT: AccessKeyId, SecretAccessKey, Token
     Note over EXT: AWS Signature v4:<br/>1. CanonicalRequest = POST / headers body<br/>2. StringToSign = algo + date + scope + hash(canonical)<br/>3. SigningKey = HMAC(HMAC(HMAC(HMAC(AWS4+secret,date),region),sts),aws4_request)<br/>4. Signature = hex(HMAC(SigningKey, StringToSign))
     EXT-->>TF: JSON {role, iam_http_request_method,<br/>iam_request_url (b64), iam_request_body (b64),<br/>iam_request_headers (b64)}
 
     Note over TF,AWS: Vault Login Phase (provider initialization)
     TF->>VP: Configure with signed payload
-    VP->>VAUTH: POST /v1/auth/aws/login<br/>{role, iam_http_request_method,<br/>iam_request_url, iam_request_body,<br/>iam_request_headers}
-    VAUTH->>STS: Replay signed request:<br/>POST sts.amazonaws.com<br/>Action=GetCallerIdentity
+    VP->>VAUTH: POST /v1/auth/aws/login<br/>{role, iam_http_request_method,<br/>iam_request_url (b64), iam_request_body (b64),<br/>iam_request_headers (b64)}
+    VAUTH->>STS: Replay signed request:<br/>POST sts.amazonaws.com<br/>Action=GetCallerIdentity&Version=2011-06-15
     STS-->>VAUTH: 200 OK (Account, Arn, UserId)
-    VAUTH-->>VP: client_token (hvs.xxx),<br/>policies, ttl
+    VAUTH-->>VP: client_token,<br/>policies, ttl
 
     Note over TF,AWS: Credential Issuance Phase (ephemeral resource)
-    VP->>VSE: GET /v1/aws/creds/:role<br/>(X-Vault-Token: hvs.xxx)
+    VP->>VSE: GET /v1/aws/creds/:role<br/>(X-Vault-Token: [vault_token])
     Note over VSE: Vault uses its own stored<br/>AWS credentials to call STS
     VSE->>STS: AssumeRole or GetFederationToken
     STS-->>VSE: Temporary credentials:<br/>AccessKeyId (ASIA...),<br/>SecretAccessKey, SessionToken,<br/>Expiration
