@@ -23,6 +23,9 @@ sequenceDiagram
     TF->>EXT: Execute program
     EXT->>IMDS: GET /2020-10-27/meta-data/iam/info
     IMDS-->>EXT: InstanceProfileArn (extract profile name)
+    EXT->>IMDS: GET /2020-10-27/meta-data/iam/security-credentials/{profile_from_arn}
+    IMDS-->>EXT: AccessKeyId, SecretAccessKey, Token
+    Note over EXT: Validation: re-fetch via listing
     EXT->>IMDS: GET /2020-10-27/meta-data/iam/security-credentials/
     IMDS-->>EXT: profile name
     EXT->>IMDS: GET /2020-10-27/meta-data/iam/security-credentials/{profile}
