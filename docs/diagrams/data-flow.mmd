@@ -13,13 +13,13 @@ sequenceDiagram
     EXT->>IMDS: GET /meta-data/iam/info
     IMDS-->>EXT: InstanceProfileArn
     EXT->>IMDS: GET /meta-data/iam/security-credentials/{profile}
-    IMDS-->>EXT: AccessKeyId, SecretAccessKey, SessionToken
-    Note over EXT: AWS Signature v4 signing:<br/>HMAC(date, region, sts, secret)<br/>Sign(POST sts.amazonaws.com<br/>Action=GetCallerIdentity)
+    IMDS-->>EXT: AccessKeyId, SecretAccessKey, Token
+    Note over EXT: AWS Signature v4 signing:<br/>SigningKey = HMAC(AWS4+secret, date, region, sts, aws4_request)<br/>Signature = HMAC(SigningKey, StringToSign)<br/>Sign(POST sts.amazonaws.com Action=GetCallerIdentity)
     EXT-->>TF: JSON {role, iam_http_request_method,<br/>iam_request_url (b64), iam_request_body (b64),<br/>iam_request_headers (b64)}
 
     Note over TF,AWS: Vault Login Phase (provider initialization)
     TF->>VP: Configure with signed payload
-    VP->>VAUTH: POST /v1/auth/aws/login<br/>{role, iam_request_url, iam_request_body,<br/>iam_request_headers}
+    VP->>VAUTH: POST /v1/auth/aws/login<br/>{role, iam_http_request_method,<br/>iam_request_url, iam_request_body,<br/>iam_request_headers}
     VAUTH->>STS: Replay signed request:<br/>POST sts.amazonaws.com<br/>Action=GetCallerIdentity
     STS-->>VAUTH: 200 OK (Account, Arn, UserId)
     VAUTH-->>VP: client_token (hvs.xxx),<br/>policies, ttl
