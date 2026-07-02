@@ -29,8 +29,8 @@ sequenceDiagram
     EXT->>IMDS: GET /2020-10-27/meta-data/iam/security-credentials/
     IMDS-->>EXT: profile name
     EXT->>IMDS: GET /2020-10-27/meta-data/iam/security-credentials/{profile}
-    IMDS-->>EXT: AccessKeyId, SecretAccessKey, Token
-    Note over EXT: AWS Signature v4:<br/>1. CanonicalRequest = POST / signed headers body<br/>(includes X-Vault-AWS-IAM-Server-Id header)<br/>2. StringToSign = algo + date + scope + hash(canonical)<br/>3. SigningKey = HMAC(HMAC(HMAC(HMAC(AWS4+secret,date),region),sts),aws4_request)<br/>4. Signature = hex(HMAC(SigningKey, StringToSign))
+    IMDS-->>EXT: AccessKeyId, SecretAccessKey, Token, Expiration
+    Note over EXT: AWS Signature v4:<br/>1. CanonicalRequest = POST / signed headers body<br/>(includes x-vault-aws-iam-server-id header)<br/>2. StringToSign = algo + date + scope + hash(canonical)<br/>3. SigningKey = HMAC(HMAC(HMAC(HMAC(AWS4+secret,date),region),sts),aws4_request)<br/>4. Signature = hex(HMAC(SigningKey, StringToSign))
     EXT-->>TF: JSON {role, iam_http_request_method,<br/>iam_request_url (b64), iam_request_body (b64),<br/>iam_request_headers (b64)}
 
     Note over TF,TGTAWS: Vault Login Phase (provider initialization)
