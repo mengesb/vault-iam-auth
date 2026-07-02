@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="draw.io" type="device">
+  <diagram id="vault-iam-auth-data-flow" name="Data Flow &amp; Trust Boundaries">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1800" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ==================== TRUST BOUNDARY: EC2 INSTANCE ==================== -->
+        <mxCell id="tb_instance" value="Trust Boundary: EC2 Instance" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 4;fontSize=14;fontStyle=1;verticalAlign=top;align=center;spacingTop=5;strokeColor=#1565C0;strokeWidth=3;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="600" height="580" as="geometry" />
+        </mxCell>
+
+        <!-- IMDS Request -->
+        <mxCell id="imds_req" value="curl 169.254.169.254/meta-data/iam/security-credentials/" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="160" y="80" width="360" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Raw IAM Credentials -->
+        <mxCell id="raw_creds" value="Raw IAM Credentials&lt;br&gt;&lt;hr&gt;&lt;font style=&quot;font-size:10px&quot;&gt;AccessKeyId: ASIA...&lt;br&gt;SecretAccessKey: (instance secret)&lt;br&gt;SessionToken: (STS session)&lt;br&gt;Expiration: (auto-rotated)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontSize=11;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="180" y="150" width="320" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- AWS Sig v4 Signing -->
+        <mxCell id="signing" value="AWS Signature v4 Signing&lt;br&gt;&lt;hr&gt;&lt;font style=&quot;font-size:9px&quot;&gt;1. CanonicalRequest = POST + / + headers + body&lt;br&gt;2. StringToSign = algorithm + timestamp + scope + SHA256(canonical)&lt;br&gt;3. SigningKey = HMAC(date, region, sts, secret)&lt;br&gt;4. Signature = HMAC(StringToSign, SigningKey)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontSize=11;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="120" y="280" width="440" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- JSON Payload -->
+        <mxCell id="payload" value="JSON Payload (script output)&lt;br&gt;&lt;hr&gt;&lt;font style=&quot;font-size:9px&quot;&gt;{&lt;br&gt;&amp;nbsp;&amp;nbsp;role: &quot;instance-profile-name&quot;,&lt;br&gt;&amp;nbsp;&amp;nbsp;iam_http_request_method: &quot;POST&quot;,&lt;br&gt;&amp;nbsp;&amp;nbsp;iam_request_url: base64(https://sts.amazonaws.com/),&lt;br&gt;&amp;nbsp;&amp;nbsp;iam_request_body: base64(Action=GetCallerIdentity&amp;amp;Version=...),&lt;br&gt;&amp;nbsp;&amp;nbsp;iam_request_headers: base64({Authorization: AWS4-HMAC-..., ...})&lt;br&gt;}&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontSize=11;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="80" y="410" width="520" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- Vault Provider -->
+        <mxCell id="tf_provider" value="Vault Provider calls /v1/auth/aws/login with payload" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="160" y="575" width="360" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== TRUST BOUNDARY: VAULT ==================== -->
+        <mxCell id="tb_vault" value="Trust Boundary: HashiCorp Vault" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 4;fontSize=14;fontStyle=1;verticalAlign=top;align=center;spacingTop=5;strokeColor=#F9A825;strokeWidth=3;" vertex="1" parent="1">
+          <mxGeometry x="40" y="670" width="600" height="380" as="geometry" />
+        </mxCell>
+
+        <!-- Vault Decode -->
+        <mxCell id="vault_decode" value="Vault decodes base64 payload&lt;br&gt;&lt;hr&gt;&lt;font style=&quot;font-size:9px&quot;&gt;Reconstructs original HTTP request:&lt;br&gt;POST https://sts.amazonaws.com/&lt;br&gt;Authorization: AWS4-HMAC-SHA256 Credential=...&lt;br&gt;Body: Action=GetCallerIdentity&amp;amp;Version=2011-06-15&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFDE7;strokeColor=#F9A825;fontSize=11;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="120" y="710" width="440" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Vault Token -->
+        <mxCell id="vault_token" value="Vault issues client_token&lt;br&gt;&lt;hr&gt;&lt;font style=&quot;font-size:9px&quot;&gt;token: hvs.xxxxx&lt;br&gt;policies: [aws-creds-role]&lt;br&gt;ttl: configurable&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFDE7;strokeColor=#F9A825;fontSize=11;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="140" y="840" width="200" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Vault AWS Secrets Engine -->
+        <mxCell id="vault_se" value="AWS Secrets Engine&lt;br&gt;&lt;hr&gt;&lt;font style=&quot;font-size:9px&quot;&gt;Vault calls STS AssumeRole or&lt;br&gt;GetFederationToken using its own&lt;br&gt;stored AWS credentials&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFDE7;strokeColor=#F9A825;fontSize=11;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="380" y="840" width="220" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Vault Replay label -->
+        <mxCell id="vault_replay" value="Replays signed request to AWS STS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFDE7;strokeColor=#F9A825;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="160" y="960" width="280" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== TRUST BOUNDARY: AWS STS ==================== -->
+        <mxCell id="tb_sts" value="Trust Boundary: AWS STS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 4;fontSize=14;fontStyle=1;verticalAlign=top;align=center;spacingTop=5;strokeColor=#C62828;strokeWidth=3;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1100" width="600" height="240" as="geometry" />
+        </mxCell>
+
+        <!-- STS Verify -->
+        <mxCell id="sts_verify" value="GetCallerIdentity&lt;br&gt;&lt;hr&gt;&lt;font style=&quot;font-size:9px&quot;&gt;Validates AWS Sig v4 signature&lt;br&gt;Returns: Account, Arn, UserId&lt;br&gt;(proves the instance identity)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#C62828;fontSize=11;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1150" width="240" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- STS Generate -->
+        <mxCell id="sts_generate" value="AssumeRole / GetFederationToken&lt;br&gt;&lt;hr&gt;&lt;font style=&quot;font-size:9px&quot;&gt;Returns:&lt;br&gt;AccessKeyId (temporary, ASIA...)&lt;br&gt;SecretAccessKey (temporary)&lt;br&gt;SessionToken&lt;br&gt;Expiration (short-lived)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#C62828;fontSize=11;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="360" y="1140" width="240" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== TRUST BOUNDARY: TARGET ACCOUNT ==================== -->
+        <mxCell id="tb_target" value="Trust Boundary: Target AWS Account" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 4;fontSize=14;fontStyle=1;verticalAlign=top;align=center;spacingTop=5;strokeColor=#2E7D32;strokeWidth=3;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1400" width="600" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- JIT Credentials -->
+        <mxCell id="target_creds" value="JIT Credentials (AWS Provider)&lt;br&gt;&lt;hr&gt;&lt;font style=&quot;font-size:9px&quot;&gt;access_key = ASIA... (temporary)&lt;br&gt;secret_key = (temporary)&lt;br&gt;session_token = (STS token)&lt;br&gt;ttl = lease_duration from Vault&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="120" y="1440" width="240" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Target Operations -->
+        <mxCell id="target_ops" value="AWS API calls&lt;br&gt;&lt;i&gt;(terraform plan / apply)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="1460" width="200" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== EDGES ==================== -->
+
+        <!-- IMDS -> Raw Creds -->
+        <mxCell id="f1" value="HTTP 200" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1565C0;strokeWidth=1.5;fontSize=9;" edge="1" source="imds_req" target="raw_creds" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Raw Creds -> Signing -->
+        <mxCell id="f2" value="AccessKeyId + SecretAccessKey" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1565C0;strokeWidth=1.5;fontSize=9;" edge="1" source="raw_creds" target="signing" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Signing -> Payload -->
+        <mxCell id="f3" value="Signed headers + body" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1565C0;strokeWidth=1.5;fontSize=9;" edge="1" source="signing" target="payload" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Payload -> TF Provider -->
+        <mxCell id="f4" value="JSON output to Vault provider" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1565C0;strokeWidth=1.5;fontSize=9;" edge="1" source="payload" target="tf_provider" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- TF Provider -> Vault Decode (CROSSES BOUNDARY) -->
+        <mxCell id="f5" value="POST /v1/auth/aws/login (HTTPS)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E65100;strokeWidth=3;fontSize=10;fontStyle=1;" edge="1" source="tf_provider" target="vault_decode" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Vault Decode -> Vault Replay -->
+        <mxCell id="f6" value="Reconstructed request" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#F9A825;strokeWidth=1.5;fontSize=9;" edge="1" source="vault_decode" target="vault_replay" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Vault Replay -> STS Verify (CROSSES BOUNDARY) -->
+        <mxCell id="f7" value="Replay signed HTTP request" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E65100;strokeWidth=3;fontSize=10;fontStyle=1;" edge="1" source="vault_replay" target="sts_verify" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- STS Verify -> Vault Token (CROSSES BOUNDARY back) -->
+        <mxCell id="f8" value="Identity confirmed (Account, ARN)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E65100;strokeWidth=2;fontSize=9;dashed=1;" edge="1" source="sts_verify" target="vault_token" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="60" y="1195" />
+              <mxPoint x="60" y="885" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Vault Token -> Vault SE -->
+        <mxCell id="f9" value="Authenticated session" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#F9A825;strokeWidth=1.5;fontSize=9;" edge="1" source="vault_token" target="vault_se" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Vault SE -> STS Generate (CROSSES BOUNDARY) -->
+        <mxCell id="f10" value="AssumeRole call" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E65100;strokeWidth=3;fontSize=10;fontStyle=1;" edge="1" source="vault_se" target="sts_generate" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- STS Generate -> Target Creds (CROSSES BOUNDARY) -->
+        <mxCell id="f11" value="Temporary credentials returned" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E65100;strokeWidth=3;fontSize=10;fontStyle=1;" edge="1" source="sts_generate" target="target_creds" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="480" y="1380" />
+              <mxPoint x="240" y="1380" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Target Creds -> Target Ops -->
+        <mxCell id="f12" value="AWS API requests" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;strokeWidth=1.5;fontSize=9;" edge="1" source="target_creds" target="target_ops" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
