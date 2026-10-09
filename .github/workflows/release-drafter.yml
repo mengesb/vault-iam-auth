@@ -22,7 +22,7 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: release-drafter/release-drafter@v7.6.0
+      - uses: release-drafter/release-drafter@v7.9.0
         with:
           config-name: release-drafter.yml
         env:
